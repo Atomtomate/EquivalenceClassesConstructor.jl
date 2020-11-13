@@ -2,6 +2,7 @@
 This package ... TODO: write
 =======
 # EquivalenceClassesConstructor
+This Project aims to provide a tool package that can construct equivalence classes from symmetry predicates on index n-tuples.
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Atomtomate.github.io/EquivalenceClassesConstructor.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Atomtomate.github.io/EquivalenceClassesConstructor.jl/dev)
