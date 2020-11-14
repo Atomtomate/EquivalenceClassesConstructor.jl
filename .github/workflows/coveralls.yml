@@ -1,0 +1,10 @@
+on: ["push"]
+name: Upload coveralls results
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - run: julia --color=yes 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
+        shell: bash
