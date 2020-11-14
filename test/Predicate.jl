@@ -13,7 +13,7 @@ end
 @testset "is predicate equivalence relation" begin
     pred1 = Predicate((x,y) -> x == y)
     pred2 = Predicate((x,y) -> x != y)
-    pred3 = Predicate((x,y) -> all(x .== -1 .* y)) 
+    pred3 = Predicate((x,y) -> all(x .== -y)) 
     pred4 = Predicate((x,y) -> x == y+3) 
     @test check_for_equivalence_relation(pred1, -11:10)
     @test check_for_equivalence_relation(pred2, -7:10)

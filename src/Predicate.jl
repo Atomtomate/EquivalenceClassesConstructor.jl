@@ -17,6 +17,7 @@ One can create a symmetric equivalency relation with [`make_symmetric(f)`](@ref)
 
 # Examples
 ```
+@doc
 julia> check_for_equivalence_relation(Predicate((x,y) -> x == y), -11:10)
 true
 julia> check_for_equivalence_relation(Predicate((x,y) -> x == y+2), -1:10)

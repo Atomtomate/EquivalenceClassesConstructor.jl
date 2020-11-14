@@ -19,7 +19,6 @@ with indices in the list `indl`
 ```
 julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
                           [(i,j) for i in -2:2 for j in 4:7])
-
 ```
 """
 function EquivalenceClasses(pred::Predicate, indl::IndexList)
