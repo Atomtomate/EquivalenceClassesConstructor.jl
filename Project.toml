@@ -3,6 +3,9 @@ uuid = "b0d053df-94a8-4c0c-9762-4584a2fcd8b0"
 authors = ["Julian Stobbe <Atomtomate@gmx.de> and contributors"]
 version = "0.1.0"
 
+[deps]
+DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+
 [compat]
 julia = "1"
 

@@ -1,13 +1,14 @@
 using EquivalenceClassesConstructor
 using Documenter
 
+push!(LOAD_PATH, "../src/")
 makedocs(;
     modules=[EquivalenceClassesConstructor],
     authors="Julian Stobbe <Atomtomate@gmx.de> and contributors",
     repo="https://github.com/Atomtomate/EquivalenceClassesConstructor.jl/blob/{commit}{path}#L{line}",
-    sitename="EquivalenceClassesConstructor.jl",
+    sitename="Equivalence Classes",
     format=Documenter.HTML(;
-        prettyurls=get(ENV, "CI", "false") == "true",
+        prettyurls=get(ENV, "CI", nothing) == "true",
         canonical="https://Atomtomate.github.io/EquivalenceClassesConstructor.jl",
         assets=String[],
     ),
