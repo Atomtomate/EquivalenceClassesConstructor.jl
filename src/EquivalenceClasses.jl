@@ -4,7 +4,6 @@ const IndexList = AbstractArray
 struct EquivalenceClasses
   pred::Predicate
   indl::IndexList
-  adjacencyMatrix::
   classes::AbstractArray{AbstractArray{IndexList,1},1}
 end
 
