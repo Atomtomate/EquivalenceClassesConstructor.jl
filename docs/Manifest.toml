@@ -3,6 +3,12 @@
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
+[[BinaryProvider]]
+deps = ["Libdl", "Logging", "SHA"]
+git-tree-sha1 = "ecdec412a9abc8db54c0efc5548c64dfce072058"
+uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
+version = "0.5.10"
+
 [[Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -23,10 +29,20 @@ git-tree-sha1 = "71e35e069daa9969b8af06cef595a1add76e0a11"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.25.3"
 
+[[DocumenterTools]]
+deps = ["Base64", "DocStringExtensions", "Documenter", "FileWatching", "LibGit2", "Sass"]
+git-tree-sha1 = "58952158c0fda2241761abd96a039ca13aa83c82"
+uuid = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+version = "0.1.8"
+
 [[EquivalenceClassesConstructor]]
+deps = ["DocumenterTools"]
 path = ".."
 uuid = "b0d053df-94a8-4c0c-9762-4584a2fcd8b0"
 version = "0.1.0"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[IOCapture]]
 deps = ["Logging"]
@@ -85,6 +101,12 @@ uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[[Sass]]
+deps = ["BinaryProvider", "Libdl", "Test"]
+git-tree-sha1 = "de11179555c6363c5a61c4c94376db3498983734"
+uuid = "322a6be2-4ae8-5d68-aaf1-3e960788d1d9"
+version = "0.1.0"
 
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
