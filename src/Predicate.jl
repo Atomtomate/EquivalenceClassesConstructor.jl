@@ -24,10 +24,11 @@ false
 """
 function check_for_equivalence_relation(f::Predicate, dom)
   for (i,el1) in enumerate(dom)
-    for el2 in dom[i+1:end]
+    for el2 in dom
       !(f(el1,el2) == f(el2,el1)) && return false
     end
   end
+  #TODO: check transitivity
   return true
 end
 
@@ -37,5 +38,5 @@ end
 Create symmetric predicate from arbitrary predicateg
 """
 function make_symmetric(f::Predicate)
-  return f(x,y) || f(y,x)
+  return Predicate((x,y)->(f.f(x,y) || f.f(y,x)))
 end
