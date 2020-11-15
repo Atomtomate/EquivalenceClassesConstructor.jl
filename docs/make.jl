@@ -18,5 +18,8 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/Atomtomate/EquivalenceClassesConstructor.jl",
+    branch="gh-pages",
+    devbranch = "main",
+    devurl = "stable",
+    repo="github.com/Atomtomate/EquivalenceClassesConstructor.jl.git",
 )
