@@ -44,6 +44,7 @@ jobs:
       - uses: julia-actions/julia-uploadcoveralls@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          service_name: github
           parallel: true
           continue-on-error: true
   docs:
