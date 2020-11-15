@@ -40,9 +40,8 @@ jobs:
       - uses: julia-actions/julia-processcoverage@v1
       - uses: coverallsapp/github-action@v1.1.0
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          parallel: true
-          continue-on-error: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
       - uses: codecov/codecov-action@v1
         with:
           file: lcov.info
