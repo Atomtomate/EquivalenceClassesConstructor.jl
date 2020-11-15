@@ -46,13 +46,17 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           file: lcov.info
-      - uses: julia-actions/julia-uploadcoveralls@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          service_name: "github"
-          parallel: true
-          continue-on-error: true
+          flags: unittests
+          fail_ci_if_error: false
+          token: ${{ secrets.REPO_TOKEN }}
+#      - uses: julia-actions/julia-uploadcoveralls@v1
+#       env:
+#         global:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           service_name: "github"
+#           parallel: true
+#           continue-on-error: true
   docs:
     name: Documentation
     runs-on: ubuntu-latest
