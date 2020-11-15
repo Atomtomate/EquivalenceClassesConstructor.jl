@@ -12,6 +12,5 @@ end
     pred1 = Predicate((x,y) -> x == -y || x == y)
     indl1 = -2:3
     eqC_1 = EquivalenceClasses(pred1, indl1)
-    println(build_adj_matrix(pred1, indl1))
     @test all(build_adj_matrix(pred1, indl1) == Bool[1 0 0 0 1 0; 0 1 0 1 0 0; 0 0 1 0 0 0; 0 1 0 1 0 0; 1 0 0 0 1 0; 0 0 0 0 0 1])
 end

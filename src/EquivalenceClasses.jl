@@ -28,23 +28,3 @@ end
 build_classes_naive(pred, indl) = []
 
 # ====================  Auxiliary functions ====================
-
-"""
-    build_adj_matrix(pred, indl)
-
-Constructs adjacency matrix with vertices from `indl` and edges
-from `pred(i,j)` where `i,j ∈ indl`
-"""
-function build_adj_matrix(pred::Predicate, indl)
-  adj = BitArray(undef, length(indl),length(indl))
-  for (i,ind) in enumerate(indl)
-    adj[i,i] = true
-    for (j,ind2) in enumerate(indl[i+1:end])
-      println(i, ", ",j+i, ": ", pred(ind, ind2))
-      adj[i,j+i] = pred(ind,ind2)
-      adj[j+i,i] = pred(ind2,ind)
-    end
-  end
-
-  return adj
-end

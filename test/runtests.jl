@@ -1,6 +1,7 @@
 using EquivalenceClassesConstructor
 using Test
 
+include("../src/GraphTools.jl")
 include("../src/Predicate.jl")
 include("../src/EquivalenceClasses.jl")
 
@@ -10,6 +11,7 @@ include("../src/EquivalenceClasses.jl")
         include("./Predicate.jl")
     end
     @testset "graph" begin
+        include("./GraphTools.jl")
         include("./EquivalenceClasses.jl")
     end
 end
