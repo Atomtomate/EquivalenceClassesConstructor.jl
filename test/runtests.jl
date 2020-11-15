@@ -1,8 +1,8 @@
 using EquivalenceClassesConstructor
 using Test
 
-include("../src/GraphTools.jl")
 include("../src/Predicate.jl")
+include("../src/GraphTools.jl")
 include("../src/EquivalenceClasses.jl")
 
 @testset "EquivalenceClassesConstructor.jl" begin

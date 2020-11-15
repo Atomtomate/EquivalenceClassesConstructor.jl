@@ -9,7 +9,7 @@ function build_adj_matrix(pred::Predicate, indl)
   for (i,ind) in enumerate(indl)
     adj[i,i] = true
     for (j,ind2) in enumerate(indl[i+1:end])
-      println(i, ", ",j+i, ": ", pred(ind, ind2))
+      #println(i, ", ",j+i, ": ", pred(ind, ind2))
       adj[i,j+i] = pred(ind,ind2)
       adj[j+i,i] = pred(ind2,ind)
     end
