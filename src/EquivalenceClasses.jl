@@ -1,5 +1,3 @@
-# index stuff here
-const IndexList = AbstractArray
 
 struct EquivalenceClasses
   pred::Predicate
