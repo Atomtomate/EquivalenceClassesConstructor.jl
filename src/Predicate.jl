@@ -14,6 +14,7 @@ end
 Given a Predicate `f` over a domain `dom`, return `true` if `f`
 is a equivalence relation, `false` otherwise.
 One can create a symmetric equivalency relation with [`make_symmetric(f)`](@ref)
+TODO: check transitivity.
 
 # Examples
 ```
@@ -30,13 +31,4 @@ function check_for_equivalence_relation(f::Predicate, dom)
   end
   #TODO: check transitivity
   return true
-end
-
-"""
-    make_symmetric(f::Predicate)
-
-Create symmetric predicate from arbitrary predicateg
-"""
-function make_symmetric(f::Predicate)
-  return Predicate((x,y)->(f.f(x,y) || f.f(y,x)))
 end

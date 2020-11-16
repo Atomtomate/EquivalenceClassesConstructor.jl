@@ -1,3 +1,6 @@
+
+# ====================  Auxiliary functions ====================
+
 """
     build_adj_matrix(pred, indl)
 
@@ -9,23 +12,41 @@ function build_adj_matrix(pred::Predicate, indl)
   for (i,ind) in enumerate(indl)
     adj[i,i] = true
     for (j,ind2) in enumerate(indl[i+1:end])
-      #println(i, ", ",j+i, ": ", pred(ind, ind2))
-      adj[i,j+i] = pred(ind,ind2)
-      adj[j+i,i] = pred(ind2,ind)
+      adj[i,j+i] = pred(ind,ind2) || pred(ind2,ind)
+      adj[j+i,i] = adj[i,j+i]
     end
   end
-
   return adj
 end
 
 """
-    DFS!(adj::BitArray{2}, start::Int64, visited::AbstractArray)
+    find_classes(adj::BitArray{2})
 
-Depth first search in graph with adjacency matrix `adj` from `start`.
-This will delete all reachable nodes (from `start`) in `open`.
+returns an array of length `size(adj,1)` with each entry with index `i` being
+a unique identifier for the equivalency class of the node `i`.
 """
-function DFS!(adj::BitArray{2}, start::Int64, open::AbstractArray)
-  for i in 1:size(adj,2)
-    #if adj[start,i]
+function find_classes(adj::BitArray{2})
+  classes = collect(1:size(adj,1))      # every node has its own class at the start
+  for i in 1:size(adj,1)
+    for j in (i+1):size(adj,2)
+      adj[i,j] && (classes[j] = classes[i])   # merge class of neighbour with current node
+    end
   end
+  return classes
+end
+
+"""
+    find_classes(pred::Predicate, indl)
+
+returns an array of length `length(indl)` with each entry with index `i` being
+a unique identifier for the equivalency class of the node `i`.
+"""
+function find_classes(pred::Predicate, indl::AbstractArray)
+  classes = collect(1:length(indl))      # every node has its own class at the start
+  for (i,ind) in enumerate(indl)
+    for j in (i+1):length(indl)
+      (pred(ind,indl[j]) || pred(indl[j],ind)) && (classes[j] = classes[i])   # merge class of neighbour with current node
+    end
+  end
+  return classes
 end

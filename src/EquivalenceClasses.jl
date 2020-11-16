@@ -4,16 +4,17 @@ const IndexList = AbstractArray
 struct EquivalenceClasses
   pred::Predicate
   indl::IndexList
-  classes::AbstractArray{AbstractArray{IndexList,1},1}
+  classes::Array
 end
-
-Base.show(io::IO, z::EquivalenceClasses) = print(io, "naive show: ", z.pred, z.indl, z.classes)
 
 """
     EquivalenceClasses(pred, indl)
 
 Constructs an EquivalenceClasses struct from a predicate `pred`
-with indices in the list `indl`
+with indices in the list `indl`.
+`pred` needs to be a equivalence relation: reflexivity, symmetry
+and transitivity will be enforced by the algorithm creating the 
+adjecency matrix.
 
 # Examples
 ```
@@ -22,9 +23,14 @@ julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
 ```
 """
 function EquivalenceClasses(pred::Predicate, indl::IndexList)
-  return EquivalenceClasses(pred, indl, build_classes_naive(pred, indl))
+  return EquivalenceClasses(pred, indl, find_classes(pred, indl))
 end
 
-build_classes_naive(pred, indl) = []
-
 # ====================  Auxiliary functions ====================
+
+Base.show(io::IO, z::EquivalenceClasses) = print(io, "Equivalence classes of ", 
+                                                 z.pred, 
+                                                 " over index list ",
+                                                 z.indl,
+                                                 " with classes ",
+                                                 z.classes)
