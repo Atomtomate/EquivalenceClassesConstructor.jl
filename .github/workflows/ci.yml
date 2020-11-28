@@ -49,14 +49,14 @@ jobs:
           flags: unittests
           fail_ci_if_error: false
           token: ${{ secrets.REPO_TOKEN }}
-#      - uses: julia-actions/julia-uploadcoveralls@v1
-#       env:
-#         global:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           github-token: ${{ secrets.GITHUB_TOKEN }}
-#           service_name: "github"
-#           parallel: true
-#           continue-on-error: true
+      - uses: julia-actions/julia-uploadcoveralls@v1
+       env:
+         global:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           github-token: ${{ secrets.GITHUB_TOKEN }}
+           service_name: "github"
+           parallel: true
+           continue-on-error: true
   docs:
     name: Documentation
     runs-on: ubuntu-latest

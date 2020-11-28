@@ -54,6 +54,12 @@ function find_classes(adj::BitArray{2})
   return classes
 end
 
+
+function find_classes(map::Mapping)
+
+end
+
+
 """
     find_classes(pred::Predicate, indl)
 
