@@ -1,4 +1,3 @@
-
 # ====================  Auxiliary functions ====================
 
 """
@@ -24,13 +23,33 @@ end
 
 returns an array of length `size(adj,1)` with each entry with index `i` being
 a unique identifier for the equivalency class of the node `i`.
+Uses adjacency matrix as input. I.e. graph needs to be constructed before.
+#
+# Examples
+```
+julia> find_classes(convert(BitArray, [0 1 0; 1 0 0; 0 0 0]))
+[1, 1, 2]
+```
 """
 function find_classes(adj::BitArray{2})
-  classes = collect(1:size(adj,1))      # every node has its own class at the start
-  for i in 1:size(adj,1)
-    for j in (i+1):size(adj,2)
-      adj[i,j] && (classes[j] = classes[i])   # merge class of neighbour with current node
+  N = size(adj,1)
+  classes = collect(1:N)                        # every node has its own class at the start
+  cc = 1                                        # current class counter
+  openL = trues(N)                              # no vertices have been visited yet
+  for i in 1:N                                  # check all vertices at least once
+    !openL[i] && continue                       # if node already checked, continue
+    classes[i] = cc                             # current node has class cc
+    indL = [i]                                  # add current vertex to search list
+    while !isempty(indL)                        # search through all reachable vertices
+      j = pop!(indL)                            # first vertex in index List is next candidate
+      !openL[j] && continue
+      openL[j] = false                          # set current node to visited
+      neighbors = findall(adj[i,:] .& openL)    # add all adjacent AND open vertices to class
+      indL = union(neighbors,indL)              # without double entries
+      classes[indL] .= cc                       # set all neighbors to current class
     end
+    cc += 1
+    sum(openL) == 0 && break                    # no more open vertices left, return
   end
   return classes
 end
@@ -51,6 +70,7 @@ function find_classes(pred::Predicate, indl::IndexList; isSymmetric=false)
       pred_internal(ind,ind2) && (classes[j] = classes[i])   # merge class of neighbour with current node
     end
   end
+  println("")
   return classes
 end
 

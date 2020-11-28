@@ -2,7 +2,7 @@ module EquivalenceClassesConstructor
 
   export EquivalenceClasses
 
-  include("./Predicate.jl")
+  include("./Mappings.jl")
   include("./GraphTools.jl")
   include("./EquivalenceClasses.jl")
 # Write your package code here.

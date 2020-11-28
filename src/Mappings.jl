@@ -6,11 +6,12 @@ struct Predicate
   f::Function
 end
 
-struct Transformation
+struct Mapping
   f::Function
 end
 
 (p::Predicate)(x,y) = p.f(x,y)
+(m::Mapping)(x) = p.f(x)
 
 # ====================  Auxiliary functions ====================
 
@@ -24,6 +25,7 @@ TODO: check transitivity.
 
 # Examples
 ```
+julia> check_for_equivalence_relation(Predicate((x,y) -> x == -y), -5:10)
 true
 julia> check_for_equivalence_relation(Predicate((x,y) -> x == y+2), -1:10)
 false
