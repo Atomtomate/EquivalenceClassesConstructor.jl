@@ -49,10 +49,9 @@ jobs:
           flags: unittests
           fail_ci_if_error: false
           token: ${{ secrets.REPO_TOKEN }}
-      - uses: julia-actions/julia-uploadcoveralls@v1
+      - uses: julia-actions/julia-uploadcodecov@latest
         env:
-           COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-           continue-on-error: true
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   docs:
     name: Documentation
     runs-on: ubuntu-latest
