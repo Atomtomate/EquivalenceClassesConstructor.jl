@@ -50,11 +50,8 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.REPO_TOKEN }}
       - uses: julia-actions/julia-uploadcoveralls@v1
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           github-token: ${{ secrets.GITHUB_TOKEN }}
-           service_name: "github"
-           parallel: true
+        env:
+           COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
            continue-on-error: true
   docs:
     name: Documentation
