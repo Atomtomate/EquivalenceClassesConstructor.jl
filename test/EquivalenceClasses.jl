@@ -1,12 +1,12 @@
 @testset "build equivalence list" begin
     pred1 = Predicate((x,y) -> x == y)
-    indl1 = -10:10
+    indl1 = 1:5
     eqC_1 = EquivalenceClasses(pred1, indl1)
+    sol1 = Dict(zip(1:5,[[1], [2], [3], [4], [5]]))
     @test typeof(eqC_1) === EquivalenceClasses
+    @test typeof(eqC_1.map) <: IndexMapping
     @test eqC_1.pred === pred1
-    @test all(eqC_1.indl .== indl1)
-    @test all(eqC_1.classes .== collect(1:length(indl1)))
-    @test typeof(eqC_1.classes) <: AbstractArray
+    @test eqC_1.map == sol1
 end
 
 @testset "complete tests" begin

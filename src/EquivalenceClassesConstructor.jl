@@ -1,7 +1,9 @@
 module EquivalenceClassesConstructor
 
-  export EquivalenceClasses
+  export Predicate, Mapping, EquivalenceClasses
 
+  include("./Types.jl")
+  include("./helpers.jl")
   include("./Mappings.jl")
   include("./GraphTools.jl")
   include("./EquivalenceClasses.jl")
