@@ -14,7 +14,7 @@ can be used to expand subsequent calculations over the reduced set back to the f
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Atomtomate.github.io/EquivalenceClassesConstructor.jl/stable)
 [![Build Status](https://github.com/Atomtomate/EquivalenceClassesConstructor.jl/workflows/CI/badge.svg)](https://github.com/Atomtomate/EquivalenceClassesConstructor.jl/actions)
-[![Coverage](https://codecov.io/gh/Atomtomate/EquivalenceClassesConstructor.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Atomtomate/EquivalenceClassesConstructor.jl)
+[![Coverage](https://codecov.io/gh/Atomtomate/EquivalenceClassesConstructor.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Atomtomate/EquivalenceClassesConstructor.jl) [![Join the chat at https://gitter.im/JuliansBastelecke/EquivalenceClasses](https://badges.gitter.im/JuliansBastelecke/EquivalenceClasses.svg)](https://gitter.im/JuliansBastelecke/EquivalenceClasses?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 [^1]: The reason being, that `m(m(x))` may lie in `vl` but `m(x))` may not, forcing the algorithm to terminate.
