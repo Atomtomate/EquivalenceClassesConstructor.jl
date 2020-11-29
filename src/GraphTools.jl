@@ -45,14 +45,16 @@ n place.
 In case the vertex list is closed under the mapping (i.e. there exist no `x` in 
 `vl` such that `m(x)` is not in `vl`), `closed` can be set to `false` in order
 to improve performace.
+The boolean `sorted` can be set to true, if the resulting expand map should be 
+sorted (one should make sure, that the elements of `vl` are comparable).
 
 # Examples
 ```
 julia> find_classes(Mapping(x-> [-x]), -2:4)
-Dict(0 => 3,4 => 5,2 => 1,-2 => 1,-1 => 2,3 => 4,1 => 2)
+"IndexMapping{Int64}[Full: -2:4, ExpandMap: Dict(0 => [0],4 => [4],-2 => [-2, 2],-1 => [-1, 1],3 => [3])]"
 ```
 """
-function find_classes(m::Mapping, vl::AbstractArray; closed=false)
+function find_classes(m::Mapping, vl::AbstractArray; closed=false, sorted=false)
   classes = Dict(zip(vl,vl))
   openL = Dict(zip(vl,trues(length(vl))))       # mark all vertices as open (not visited)
   for vi in vl                                  # visit each entry at least once
@@ -75,37 +77,38 @@ function find_classes(m::Mapping, vl::AbstractArray; closed=false)
     end
     sum(values(openL)) == 0 && break                    # no more open vertices left, return
   end
-  expandMap = invertDict(classes)
+  expandMap = invertDict(classes, sorted=sorted)
   return IndexMapping(vl, expandMap)
 end
 
 
 """
-    find_classes(pred::Predicate, indl; isSymmetric=false)
+    find_classes(pred::Predicate, vl; isSymmetric=false)
 
-returns an array of length `length(indl)` with each entry with index `i` being
+returns an array of length `length(vl)` with each entry with index `i` being
 a unique identifier for the equivalency class of the node `i`.
+See `find_classes(m::Mapping, vl)` for more information.
 """
-function find_classes(pred::Predicate, indl::AbstractArray; isSymmetric=false)
-    adj = isSymmetric ? build_adj_matrix(pred, indl) : 
-        build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), indl)
-    expandMap = invertDict(Dict(zip(indl,indl[find_classes(adj)])))
-    return IndexMapping(indl, expandMap)
+function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false, sorted=false)
+    adj = isSymmetric ? build_adj_matrix(pred, vl) : 
+        build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
+    expandMap = invertDict(Dict(zip(vl,vl[find_classes(adj)])), sorted=sorted)
+    return IndexMapping(vl, expandMap)
 end
 
 # ====================  Auxiliary functions ====================
 
 """
-    build_adj_matrix(pred, indl)
+    build_adj_matrix(pred, vl)
 
-Constructs adjacency matrix with vertices from `indl` and edges
-from `pred(i,j)` where `i,j ∈ indl`
+Constructs adjacency matrix with vertices from `vl` and edges
+from `pred(i,j)` where `i,j ∈ vl`
 """
-function build_adj_matrix(pred::Predicate, indl)
-  adj = BitArray(undef, length(indl),length(indl))
-  for (i,ind) in enumerate(indl)
+function build_adj_matrix(pred::Predicate, vl)
+  adj = BitArray(undef, length(vl),length(vl))
+  for (i,ind) in enumerate(vl)
     adj[i,i] = true
-    for (j,ind2) in enumerate(Iterators.drop(indl,i))
+    for (j,ind2) in enumerate(Iterators.drop(vl,i))
       adj[i,j+i] = pred(ind,ind2) || pred(ind2,ind)
       adj[j+i,i] = adj[i,j+i]
     end
