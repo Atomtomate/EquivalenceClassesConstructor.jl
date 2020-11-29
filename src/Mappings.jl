@@ -11,7 +11,7 @@ struct Mapping
 end
 
 (p::Predicate)(x,y) = p.f(x,y)
-(m::Mapping)(x) = p.f(x)
+(m::Mapping)(x) = m.f(x)
 
 # ====================  Auxiliary functions ====================
 

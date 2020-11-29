@@ -20,7 +20,6 @@ end
     adj1 = falses(5,5)
     adj2 = trues(5,5)
     adj3 = convert(BitArray, [0 1 0; 1 0 0; 0 0 0])
-    println(find_classes(adj3))
     @test all(find_classes(adj1) .== collect(1:5))
     @test all(find_classes(adj2) .== ones(5))
     @test all(find_classes(adj3) .== [1, 1, 2])

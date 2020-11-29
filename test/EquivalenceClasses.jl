@@ -5,6 +5,7 @@
     @test typeof(eqC_1) === EquivalenceClasses
     @test eqC_1.pred === pred1
     @test all(eqC_1.indl .== indl1)
+    @test all(eqC_1.classes .== collect(1:length(indl1)))
     @test typeof(eqC_1.classes) <: AbstractArray
 end
 

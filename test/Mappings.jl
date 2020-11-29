@@ -21,3 +21,15 @@ end
     @test !check_for_equivalence_relation(pred4, -7:10)
 end
 
+@testset "mappings" begin
+    m1 = Mapping(x -> [x])
+    m2 = Mapping(x -> [-x])
+    sol2 = Dict(-4 => 1, -3 => 2, 3 => 2, -2 => 3, 2 => 3, -1 => 4, 1 => 4, 0 => 5)
+    m3 = Mapping(x -> [x+3,x-3])
+    m5 = Mapping(x -> [x-3])
+    sol3 = Dict(-4 => 1, -1 => 1, 2 => 1, -3 => 2, 0 => 2, 3 => 2, -2 => 3, 1 => 3)
+    @test find_classes(m1, 1:5) == Dict(zip(1:5,collect(1:5)))
+    @test find_classes(m2, -4:3) == sol2
+    @test find_classes(m3, -4:3) == sol3
+    @test !(find_classes(m5, -4:3) == sol3)
+end
