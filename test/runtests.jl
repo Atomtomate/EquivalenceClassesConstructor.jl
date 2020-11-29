@@ -6,6 +6,7 @@ include("../src/helpers.jl")
 include("../src/Mappings.jl")
 include("../src/GraphTools.jl")
 include("../src/EquivalenceClasses.jl")
+include("../src/IO.jl")
 
 @testset "EquivalenceClassesConstructor.jl" begin
     # Write your tests here.
@@ -21,5 +22,8 @@ include("../src/EquivalenceClasses.jl")
     @testset "graph" begin
         include("./GraphTools.jl")
         include("./EquivalenceClasses.jl")
+    end
+    @testset "IO" begin
+        include("./IO.jl")
     end
 end

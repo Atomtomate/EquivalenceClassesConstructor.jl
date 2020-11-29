@@ -4,10 +4,10 @@ struct EquivalenceClasses
 end
 
 """
-    EquivalenceClasses(pred::Predicate, indl::AbstractArray)
+    EquivalenceClasses(pred::Predicate, vl::AbstractArray)
 
 Constructs an EquivalenceClasses struct from a predicate `pred`
-over `n` indices in the list `indl`.
+over `n` indices in the list `vl`.
 This inputs requires `n^2` operations in order to create the
 adjecency matrix. For large inputs a mapping is therefore 
 preferabel.
@@ -18,16 +18,16 @@ julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
                           [(i,j) for i in -2:2 for j in 4:7])
 ```
 """
-function EquivalenceClasses(pred::Predicate, indl::AbstractArray)
-    return EquivalenceClasses(pred, find_classes(pred,indl))
+function EquivalenceClasses(pred::Predicate, vl::AbstractArray)
+    return EquivalenceClasses(pred, find_classes(pred,vl))
 end
 
 
 """
-    EquivalenceClasses(m::Mapping, indl::AbstractArray)
+    EquivalenceClasses(m::Mapping, vl::AbstractArray)
 
 Constructs an EquivalenceClasses struct from a mapping `m`
-over the indices in the list `indl`.
+over the indices in the list `vl`.
 
 # Examples
 ```
@@ -35,16 +35,11 @@ julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
                           [(i,j) for i in -2:2 for j in 4:7])
 ```
 """
-function EquivalenceClasses(m::Mapping, indl::AbstractArray)
-  return EquivalenceClasses(m, find_classes(m,indl))
+function EquivalenceClasses(m::Mapping, vl::AbstractArray)
+  return EquivalenceClasses(m, find_classes(m,vl))
 end
 
 
 # ====================  Auxiliary functions ====================
 
-Base.show(io::IO, z::EquivalenceClasses) = print(io, "Equivalence classes of ", 
-                                                 z.pred, 
-                                                 " over set ",
-                                                 z.indl,
-                                                 " with classes ",
-                                                 z.classes)
+Base.show(io::IO, z::EquivalenceClasses) = show(io, "Equivalence Classes of $(z.pred): "*string(z.map))
