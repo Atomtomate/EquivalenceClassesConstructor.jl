@@ -1,6 +1,3 @@
-# index stuff here
-const IndexList = Union{AbstractArray, Base.Generator}
-
 # TODO: limit types for arguments of f
 struct Predicate
   f::Function
