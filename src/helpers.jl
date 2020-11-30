@@ -5,8 +5,7 @@ function invertDict(D::Dict; sorted=false)
         push!(invD[v], k)
     end
     if sorted
-        kl = collect(keys(invD))
-        for k in sort!(kl)
+        for k in keys(invD)
             sort!(invD[k]) 
         end
     end
