@@ -18,8 +18,46 @@ can be used to expand subsequent calculations over the reduced set back to the f
 | ------------------- |:------------------:| :-------------:| :-------------:|
 | [![Build Status](https://github.com/Atomtomate/EquivalenceClassesConstructor.jl/workflows/CI/badge.svg)](https://github.com/Atomtomate/EquivalenceClassesConstructor.jl/actions) | [![Coverage](https://codecov.io/gh/Atomtomate/EquivalenceClassesConstructor.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Atomtomate/EquivalenceClassesConstructor.jl) | [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Atomtomate.github.io/EquivalenceClassesConstructor.jl/stable) |[![Gitter](https://badges.gitter.im/JuliansBastelecke/EquivalenceClasses.svg)](https://gitter.im/JuliansBastelecke/EquivalenceClasses?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) |
 
+
+Setup
+-----------
+
+
+
+
 Basic Usage
 -----------
+
+By default, the constructor of the `EquivalenceClasses` will do the heavy lifting. You should therefore expect 
+this line of the code to use up substential amount of compute time for large inputs.
+The first step is to define a seg `S` and a relationship between elements of `S`.
+
+```
+using EquivalenceClassesConstructor
+
+S = -4:3
+m1 = Mapping(x -> [-x])
+p1 = Predicate((x,y) -> x == -y)
+```
+In cases where a mapping is known, it should be prefered over predicates since it requires substantially less evaluation time.
+Once the relationships and grid are defined we can compute a minimal set of representatives from all equivalence classes of `S`
+under `m1` or `p1`.
+```
+eqc = EquivalenceClasses(m1, -4:3)
+eqc_2 = EquivalenceClasses(p1, -4:3)
+```
+Both computations should yield a minimal set and a mapping back to `S`.
+Ordering is not guaranteed, but can be forced by adding the optional parameter `sorted=true` to the `EquivalenceClasses`
+constructor.
+
+Since the output is most likely part of a larger computation, the package provides some IO options. For example as fixed width
+human readable files.
+```
+open("eqc_out.txt", "w") do io
+    write_fixed_width(io, eqc)
+end;
+```
+
 
 
 <a name="footnote1">1</a>: The reason being, that `m(m(x))` may lie in `vl` but `m(x))` may not, forcing the algorithm to terminate.
