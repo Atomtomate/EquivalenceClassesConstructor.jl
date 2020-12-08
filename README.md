@@ -43,8 +43,8 @@ In cases where a mapping is known, it should be prefered over predicates since i
 Once the relationships and grid are defined we can compute a minimal set of representatives from all equivalence classes of `S`
 under `m1` or `p1`.
 ```
-eqc = EquivalenceClasses(m1, -4:3)
-eqc_2 = EquivalenceClasses(p1, -4:3)
+eqc = EquivalenceClasses(m1, S)
+eqc_2 = EquivalenceClasses(p1, S)
 ```
 Both computations should yield a minimal set and a mapping back to `S`.
 Ordering is not guaranteed, but can be forced by adding the optional parameter `sorted=true` to the `EquivalenceClasses`

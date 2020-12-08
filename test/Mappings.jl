@@ -23,12 +23,12 @@ end
 
 @testset "mappings" begin
     m1 = Mapping(x -> [x])
-    sol1 = Dict(zip(1:5,[[1], [2], [3], [4], [5]]))
+    sol1 = Dict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
     m2 = Mapping(x -> [-x])
-    sol2 = Dict(0 => [0],-4 => [-4],-3 => [-3, 3],-2 => [-2, 2],-1 => [-1, 1])
+    sol2 = Dict{Int64,Array{Int64,1}}(0 => [],-4 => [],-3 => [3],-2 => [2],-1 => [1])
     m3 = Mapping(x -> [x+3,x-3])
     m5 = Mapping(x -> [x-3])
-    sol3 = Dict(-4 => [-4, -1, 2],-3 => [-3, 0, 3],-2 => [-2, 1])
+    sol3 = Dict(-4 => [-1, 2],-3 => [0, 3],-2 => [1])
     @test find_classes(m1, 1:5) == sol1
     @test find_classes(m2, -4:3,sorted=true) == sol2
     @test find_classes(m3, -4:3,sorted=true) == sol3

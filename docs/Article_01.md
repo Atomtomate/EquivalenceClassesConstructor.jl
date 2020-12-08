@@ -58,6 +58,12 @@ Our default will be depth first search.
 # Datastructures
 - Explain all structs
 
+# Mappings
+
+## Problems
+Non monotonic behavior, i.e. mappings that lead out of the set but iteration eventually leads back, can not be detected.
+This is a general statement, since detection of such a behavior is undecidable (equivalent to the halting problem).
+
 
 # References
 <a id="1">[1]</a> 

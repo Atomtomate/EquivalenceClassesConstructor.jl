@@ -81,6 +81,48 @@ function find_classes(m::Mapping, vl::AbstractArray; closed=false, sorted=false)
   return IndexMapping(vl, expandMap)
 end
 
+function find_classes2(m::Mapping, vl::AbstractArray; closed=false, sorted=false)
+  vl_int = 1:length(vl)
+  classes = Dict(zip(vl_int,vl_int))
+  classes_to_int = Dict(zip(vl,vl_int))
+  openL = Dict(zip(vl_int,trues(length(vl))))       # mark all vertices as open (not visited)
+  i = 0
+  j = 0
+  for vi in vl_int                                  # visit each entry at least once
+    j += 1
+    !openL[vi] && continue                      # if entry already checked, continue
+    i%100 == 0 && println(i, " of ", length(vl), " in $j todo: ", sum(values(openL)))
+    i += 1
+    classes[vi] = vi                            # current node has class cc
+    searchL = [vi]                              # add current vertex to search list
+    while !isempty(searchL)                     # search through all reachable entries
+      vj = pop!(searchL)                        # first vertex in index List is next candidate
+      !openL[vj] && continue
+      openL[vj] = false                         # set current node to visited
+      #println("..")
+      int_classes = (classes_to_int[el] for el in m(vl[vj]) if el in keys(classes_to_int))
+      neighbors = (el for el in int_classes if !openL[el])
+      #if closed
+          #filter(x-> openL[x], get.(classes_to_int,m(vl[vj]),0))    # add all adjacent AND open vertices to class
+      #else
+      #    filter(x->(x in keys(openL)) && openL[x], get.(classes_to_int,m(vl[vj]),0))    # add all adjacent AND open vertices to class, skip entries outside vl
+      #end
+      searchL = union(neighbors,searchL)        # without double entries
+      for el in searchL
+          classes[el] = vi
+      end
+    end
+    sum(values(openL)) == 0 && break                    # no more open vertices left, return
+  end
+  println("done, mapping back")
+  classes_final = Dict(zip(vl, (vl[i] for i in classes)))
+  println(classes_final)
+
+  println("done")
+  expandMap = invertDict(classes_final, sorted=sorted)
+  return IndexMapping(collect(vl), expandMap)
+end
+
 
 """
     find_classes(pred::Predicate, vl; isSymmetric=false)

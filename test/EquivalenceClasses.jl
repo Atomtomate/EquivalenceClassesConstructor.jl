@@ -2,7 +2,7 @@
     pred1 = Predicate((x,y) -> x == y)
     indl1 = 1:5
     eqC_1 = EquivalenceClasses(pred1, indl1)
-    sol1 = Dict(zip(1:5,[[1], [2], [3], [4], [5]]))
+    sol1 = Dict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
     @test typeof(eqC_1) === EquivalenceClasses
     @test typeof(eqC_1.map) <: IndexMapping
     @test eqC_1.pred === pred1

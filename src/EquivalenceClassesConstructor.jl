@@ -1,6 +1,6 @@
 module EquivalenceClassesConstructor
 
-export Predicate, Mapping, EquivalenceClasses, find_classes
+export Predicate, Mapping, EquivalenceClasses, find_classes2, find_classes, minimal_set
 
   include("./Types.jl")
   include("./helpers.jl")

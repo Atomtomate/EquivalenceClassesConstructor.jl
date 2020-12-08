@@ -1,4 +1,4 @@
-import Base: show, display, hash, ==, isequal, eltype
+import Base: show, display, hash, ==, isequal, eltype, keys
 
 # ========== IndexMapping =========
 struct IndexMapping{T}
@@ -18,3 +18,6 @@ end
 function show(io::IO,el::IndexMapping) 
     show(io, "IndexMapping{$(eltype(el))}[Full: " * string(el.full)*", ExpandMap: "*string(el.expandMap)*"]")
 end
+
+keys(m::IndexMapping) = keys(m.expandMap)
+minimal_set(m::IndexMapping, sorted=true) = sorted ? sort(collect(keys(m))) : collect(keys(m))
