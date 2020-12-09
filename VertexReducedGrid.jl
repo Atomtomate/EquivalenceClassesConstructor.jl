@@ -2,8 +2,8 @@ using Pkg
 Pkg.activate(".")
 using EquivalenceClassesConstructor
 
-nBose = 3
-nFermi = 3
+nBose = 180
+nFermi = 180
 shift = 1
 
 function symm_pred(l::Tuple{Int64,Int64,Int64}, r::Tuple{Int64,Int64,Int64})
@@ -17,14 +17,18 @@ function symm_pred(l::Tuple{Int64,Int64,Int64}, r::Tuple{Int64,Int64,Int64})
     return res
 end
 
-function symm_map(t::Tuple{Int64,Int64,Int64})::Array{Tuple{Int64,Int64,Int64},1}
+@inline function symm_map(t::Tuple{Int64,Int64,Int64})::Array{Tuple{Int64,Int64,Int64},1}
     res = [.- t .- (0,1,1), (t[1], t[3], t[2]),        # complex conjugation and time reversal
             (t[3]-t[2], t[2], t[1]+t[2]),    # single crossing (creation)
             (t[2]-t[3], t[1] + t[3], t[3]), #,  # single crossing (annihilation)
            (-t[1],t[1]+t[3], t[1] + t[2])]  # double crossing
 end
 
-freqList = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
-
+println("Constructing Array")
+#freqList = ((i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2))
+freqList2 = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
 mm = Mapping(symm_map)
-cl = find_classes(mm, freqList)
+#println("Starting Computation")
+#cl = find_classes(mm, freqList)
+println("Starting Computation 2")
+cl = find_classes(mm, freqList2)

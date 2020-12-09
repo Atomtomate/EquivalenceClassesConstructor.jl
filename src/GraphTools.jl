@@ -47,6 +47,8 @@ In case the vertex list is closed under the mapping (i.e. there exist no `x` in
 to improve performace.
 The boolean `sorted` can be set to true, if the resulting expand map should be 
 sorted (one should make sure, that the elements of `vl` are comparable).
+For performace reasons this function can also be called with a normal Julia
+function instead of Mapping
 
 # Examples
 ```
@@ -54,73 +56,34 @@ julia> find_classes(Mapping(x-> [-x]), -2:4)
 "IndexMapping{Int64}[Full: -2:4, ExpandMap: Dict(0 => [0],4 => [4],-2 => [-2, 2],-1 => [-1, 1],3 => [3])]"
 ```
 """
-function find_classes(m::Mapping, vl::AbstractArray; closed=false, sorted=false)
+find_classes(m::Mapping, vl::AbstractArray{T,1}; sorted=false) where T = find_classes(m.f, vl, sorted=sorted)
+
+function find_classes(m::Function, vl::AbstractArray{T,1}; sorted=false) where T
   classes = Dict(zip(vl,vl))
   openL = Dict(zip(vl,trues(length(vl))))       # mark all vertices as open (not visited)
-  for vi in vl                                  # visit each entry at least once
-    !openL[vi] && continue                      # if entry already checked, continue
-    classes[vi] = vi                            # current node has class cc
-    searchL = [vi]                              # add current vertex to search list
-    while !isempty(searchL)                     # search through all reachable entries
-      vj = pop!(searchL)                        # first vertex in index List is next candidate
+  Nopen = length(vl)
+  @time for vi in vl                      # visit each entry at least once
+    !openL[vi] && continue                # if entry already checked, continue
+    classes[vi] = vi                      # current node has class cc
+    searchL = [vi]                        # add current vertex to search list
+    j = 1
+    while j <= length(searchL)            # search through all reachable entries
+      vj = searchL[j]                     # next vertex in index List is next candidate
+      j += 1
+      classes[vj] = vi
       !openL[vj] && continue
-      openL[vj] = false                         # set current node to visited
-      neighbors = if closed
-        filter(x-> openL[x], m(vj))    # add all adjacent AND open vertices to class
-      else
-        filter(x->(x in keys(openL)) && openL[x], m(vj))    # add all adjacent AND open vertices to class, skip entries outside vl
-      end
-      searchL = union(neighbors,searchL)        # without double entries
-      for el in searchL
-          classes[el] = vi
+      openL[vj] = false                   # set current node to visited
+
+      neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el) )
+      for el in neighbors                 # add all adjacent AND open vertices to class, skip entries outside vl
+          push!(searchL, el)
       end
     end
-    sum(values(openL)) == 0 && break                    # no more open vertices left, return
+    Nopen == 0 && break                   # no more open vertices left, return
   end
-  expandMap = invertDict(classes, sorted=sorted)
+  println("Constructing Expansion Map")
+  @time expandMap = invertDict(classes, sorted=sorted)
   return IndexMapping(vl, expandMap)
-end
-
-function find_classes2(m::Mapping, vl::AbstractArray; closed=false, sorted=false)
-  vl_int = 1:length(vl)
-  classes = Dict(zip(vl_int,vl_int))
-  classes_to_int = Dict(zip(vl,vl_int))
-  openL = Dict(zip(vl_int,trues(length(vl))))       # mark all vertices as open (not visited)
-  i = 0
-  j = 0
-  for vi in vl_int                                  # visit each entry at least once
-    j += 1
-    !openL[vi] && continue                      # if entry already checked, continue
-    i%100 == 0 && println(i, " of ", length(vl), " in $j todo: ", sum(values(openL)))
-    i += 1
-    classes[vi] = vi                            # current node has class cc
-    searchL = [vi]                              # add current vertex to search list
-    while !isempty(searchL)                     # search through all reachable entries
-      vj = pop!(searchL)                        # first vertex in index List is next candidate
-      !openL[vj] && continue
-      openL[vj] = false                         # set current node to visited
-      #println("..")
-      int_classes = (classes_to_int[el] for el in m(vl[vj]) if el in keys(classes_to_int))
-      neighbors = (el for el in int_classes if !openL[el])
-      #if closed
-          #filter(x-> openL[x], get.(classes_to_int,m(vl[vj]),0))    # add all adjacent AND open vertices to class
-      #else
-      #    filter(x->(x in keys(openL)) && openL[x], get.(classes_to_int,m(vl[vj]),0))    # add all adjacent AND open vertices to class, skip entries outside vl
-      #end
-      searchL = union(neighbors,searchL)        # without double entries
-      for el in searchL
-          classes[el] = vi
-      end
-    end
-    sum(values(openL)) == 0 && break                    # no more open vertices left, return
-  end
-  println("done, mapping back")
-  classes_final = Dict(zip(vl, (vl[i] for i in classes)))
-  println(classes_final)
-
-  println("done")
-  expandMap = invertDict(classes_final, sorted=sorted)
-  return IndexMapping(collect(vl), expandMap)
 end
 
 
