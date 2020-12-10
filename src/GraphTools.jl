@@ -81,8 +81,8 @@ function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), so
     end
   end
   println("Constructing Expansion Map")
-  #@time expandMap = invertDict(classes, sorted=sorted)
-  expandMap = Dict(vl[1] => [vl[1]])
+  @time expandMap = invertDict(classes, sorted=sorted)
+  #expandMap = Dict(vl[1] => [vl[1]])
   return IndexMapping(vl, expandMap)
 end
 
