@@ -62,25 +62,23 @@ find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl), sorted=false
 
 function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), sorted=false) where T
   
-  classes = Dict(zip(vl,vl))
+  classes = Dict(zip(vl,1:vl_len))
   openL = Dict(zip(vl,trues(vl_len)))       # mark all vertices as open (not visited)
-  Nopen = vl_len
   searchL = Stack{eltype(vl)}()
-  @time for vi in vl                      # visit each entry at least once
+  @time for (i,vi) in enumerate(vl)                      # visit each entry at least once
     !openL[vi] && continue                # if entry already checked, continue
-    classes[vi] = vi                      # current node has class cc
+    classes[vi] = i                      # current node has class cc
     push!(searchL, vi)                    # add current vertex to search list
     while !isempty(searchL)               # search through all reachable entries
       vj = pop!(searchL)                  # next vertex in index List is next candidate
-      classes[vj] = vi
-      if !openL[vj] && continue 
+      classes[vj] = i
+      !openL[vj] && continue 
       openL[vj] = false                   # set current node to visited
       neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el))
       for el in neighbors                 # add all adjacent AND open vertices to class, skip entries outside vl
           push!(searchL, el)
       end
     end
-    Nopen == 0 && break                   # no more open vertices left, return
   end
   println("Constructing Expansion Map")
   #@time expandMap = invertDict(classes, sorted=sorted)

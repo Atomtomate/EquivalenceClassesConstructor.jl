@@ -2,8 +2,8 @@ using Pkg
 Pkg.activate(".")
 using EquivalenceClassesConstructor
 
-nBose = 1
-nFermi = 1
+nBose = 200
+nFermi = 200
 shift = 1
 
 function symm_pred(l::Tuple{Int64,Int64,Int64}, r::Tuple{Int64,Int64,Int64})
