@@ -35,7 +35,7 @@ end
 
 
 """
-    find_classes(m::Mapping, vl)
+    find_classes(m::Mapping, vl; vl_len=length(vl), sorted=false)
 
 returns an array of length `size(adj,1)` with each entry with index `i` being
 a unique identifier for the equivalency class of the node `i`.
@@ -45,6 +45,8 @@ n place.
 In case the vertex list is closed under the mapping (i.e. there exist no `x` in 
 `vl` such that `m(x)` is not in `vl`), `closed` can be set to `false` in order
 to improve performace.
+`vl_len` can be specified explicitly in cases where `length(vl)` does not work 
+(e.g. nested generator objects).
 The boolean `sorted` can be set to true, if the resulting expand map should be 
 sorted (one should make sure, that the elements of `vl` are comparable).
 For performace reasons this function can also be called with a normal Julia
@@ -56,25 +58,24 @@ julia> find_classes(Mapping(x-> [-x]), -2:4)
 "IndexMapping{Int64}[Full: -2:4, ExpandMap: Dict(0 => [0],4 => [4],-2 => [-2, 2],-1 => [-1, 1],3 => [3])]"
 ```
 """
-find_classes(m::Mapping, vl::AbstractArray{T,1}; sorted=false) where T = find_classes(m.f, vl, sorted=sorted)
+find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl), sorted=false) where T = find_classes(m.f, vl, vl_len=vl_len, sorted=sorted)
 
-function find_classes(m::Function, vl::AbstractArray{T,1}; sorted=false) where T
+function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), sorted=false) where T
+  
   classes = Dict(zip(vl,vl))
-  openL = Dict(zip(vl,trues(length(vl))))       # mark all vertices as open (not visited)
-  Nopen = length(vl)
+  openL = Dict(zip(vl,trues(vl_len)))       # mark all vertices as open (not visited)
+  Nopen = vl_len
+  searchL = Stack{eltype(vl)}()
   @time for vi in vl                      # visit each entry at least once
     !openL[vi] && continue                # if entry already checked, continue
     classes[vi] = vi                      # current node has class cc
-    searchL = [vi]                        # add current vertex to search list
-    j = 1
-    while j <= length(searchL)            # search through all reachable entries
-      vj = searchL[j]                     # next vertex in index List is next candidate
-      j += 1
+    push!(searchL, vi)                    # add current vertex to search list
+    while !isempty(searchL)               # search through all reachable entries
+      vj = pop!(searchL)                  # next vertex in index List is next candidate
       classes[vj] = vi
-      !openL[vj] && continue
+      if !openL[vj] && continue 
       openL[vj] = false                   # set current node to visited
-
-      neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el) )
+      neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el))
       for el in neighbors                 # add all adjacent AND open vertices to class, skip entries outside vl
           push!(searchL, el)
       end
@@ -82,7 +83,8 @@ function find_classes(m::Function, vl::AbstractArray{T,1}; sorted=false) where T
     Nopen == 0 && break                   # no more open vertices left, return
   end
   println("Constructing Expansion Map")
-  @time expandMap = invertDict(classes, sorted=sorted)
+  #@time expandMap = invertDict(classes, sorted=sorted)
+  expandMap = Dict(vl[1] => [vl[1]])
   return IndexMapping(vl, expandMap)
 end
 

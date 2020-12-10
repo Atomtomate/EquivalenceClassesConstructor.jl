@@ -2,8 +2,8 @@ using Pkg
 Pkg.activate(".")
 using EquivalenceClassesConstructor
 
-nBose = 180
-nFermi = 180
+nBose = 1
+nFermi = 1
 shift = 1
 
 function symm_pred(l::Tuple{Int64,Int64,Int64}, r::Tuple{Int64,Int64,Int64})
@@ -25,10 +25,10 @@ end
 end
 
 println("Constructing Array")
-#freqList = ((i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2))
-freqList2 = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
+freqList = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
+len_freq = (2*nBose+1)*(2*nFermi)^2
 mm = Mapping(symm_map)
 #println("Starting Computation")
 #cl = find_classes(mm, freqList)
 println("Starting Computation 2")
-cl = find_classes(mm, freqList2)
+@time cl = find_classes(mm, freqList, vl_len=len_freq)
