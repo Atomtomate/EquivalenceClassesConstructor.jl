@@ -1,11 +1,12 @@
 using EquivalenceClassesConstructor
 using Test
 
+using DataStructures
+include("../src/Mappings.jl")
+include("../src/EquivalenceClasses.jl")
 include("../src/Types.jl")
 include("../src/helpers.jl")
-include("../src/Mappings.jl")
 include("../src/GraphTools.jl")
-include("../src/EquivalenceClasses.jl")
 include("../src/IO.jl")
 
 @testset "EquivalenceClassesConstructor.jl" begin

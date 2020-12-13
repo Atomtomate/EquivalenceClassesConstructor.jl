@@ -54,14 +54,11 @@ function instead of Mapping
 
 # Examples
 ```
-julia> find_classes(Mapping(x-> [-x]), -2:4)
-"IndexMapping{Int64}[Full: -2:4, ExpandMap: Dict(0 => [0],4 => [4],-2 => [-2, 2],-1 => [-1, 1],3 => [3])]"
 ```
 """
-find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl), sorted=false) where T = find_classes(m.f, vl, vl_len=vl_len, sorted=sorted)
+find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl)) where T = find_classes(m.f, vl, vl_len=vl_len)
 
-function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), sorted=false) where T
-  
+function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl)) where T
   classes = Dict(zip(vl,1:vl_len))
   openL = Dict(zip(vl,trues(vl_len)))       # mark all vertices as open (not visited)
   searchL = Stack{eltype(vl)}()
@@ -80,12 +77,8 @@ function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), so
       end
     end
   end
-  println("Constructing Expansion Map")
-  @time expandMap = invertDict(classes, sorted=sorted)
-  #expandMap = Dict(vl[1] => [vl[1]])
-  return IndexMapping(vl, expandMap)
+  return EquivalenceClasses(Mapping(m), vl, classes)
 end
-
 
 """
     find_classes(pred::Predicate, vl; isSymmetric=false)
@@ -94,11 +87,11 @@ returns an array of length `length(vl)` with each entry with index `i` being
 a unique identifier for the equivalency class of the node `i`.
 See `find_classes(m::Mapping, vl)` for more information.
 """
-function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false, sorted=false)
+function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false)
     adj = isSymmetric ? build_adj_matrix(pred, vl) : 
         build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
-    expandMap = invertDict(Dict(zip(vl,vl[find_classes(adj)])), sorted=sorted)
-    return IndexMapping(vl, expandMap)
+    expandMap = invertDict(Dict(zip(vl,vl[find_classes(adj)])))
+    return EquivalenceClasses(pred,vl, vl[find_classes(adj)])
 end
 
 # ====================  Auxiliary functions ====================
@@ -120,3 +113,46 @@ function build_adj_matrix(pred::Predicate, vl)
   end
   return adj
 end
+
+#merge_classes()
+
+
+
+# ====================  EquivalenceClasses Wrappers  ====================
+"""
+    EquivalenceClasses(pred::Predicate, vl::AbstractArray)
+
+Constructs an EquivalenceClasses struct from a predicate `pred`
+over `n` indices in the list `vl`.
+This inputs requires `n^2` operations in order to create the
+adjecency matrix. For large inputs a mapping is therefore 
+preferabel.
+
+# Examples
+```
+julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
+                          [(i,j) for i in -2:2 for j in 4:7])
+```
+"""
+function EquivalenceClasses(pred::Predicate, vl::AbstractArray)
+    return find_classes(pred,vl)
+end
+
+
+"""
+    EquivalenceClasses(m::Mapping, vl::AbstractArray)
+
+Constructs an EquivalenceClasses struct from a mapping `m`
+over the indices in the list `vl`.
+
+# Examples
+```
+julia> EquivalenceClasses(Mapping((x)->[-x]),
+                          [(i,j) for i in -2:2 for j in 4:7])
+```
+"""
+function EquivalenceClasses(m::Mapping, vl::AbstractArray)
+  return find_classes(m,vl)
+end
+
+

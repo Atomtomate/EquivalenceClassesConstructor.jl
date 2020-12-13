@@ -29,8 +29,8 @@ end
     m3 = Mapping(x -> [x+3,x-3])
     m5 = Mapping(x -> [x-3])
     sol3 = Dict(-4 => [-1, 2],-3 => [0, 3],-2 => [1])
-    @test find_classes(m1, 1:5) == sol1
-    @test find_classes(m2, -4:3,sorted=true) == sol2
-    @test find_classes(m3, -4:3,sorted=true) == sol3
-    @test !(find_classes(m5, -4:3) == sol3)
+    @test ExpandMapping(find_classes(m1, 1:5)).expandMap == sol1
+    @test ExpandMapping(find_classes(m2, -4:3,sorted=true)).expandMap == sol2
+    @test ExpandMapping(-4:3,find_classes(m3, -4:3,sorted=true)).expandMap == sol3
+    @test !ExpandMapping(-4:3,(find_classes(m5, -4:3)).expandMap == sol3)
 end

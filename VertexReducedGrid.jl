@@ -2,8 +2,8 @@ using Pkg
 Pkg.activate(".")
 using EquivalenceClassesConstructor
 
-nBose = 200
-nFermi = 200
+nBose = 20
+nFermi = 20
 shift = 1
 
 function symm_pred(l::Tuple{Int64,Int64,Int64}, r::Tuple{Int64,Int64,Int64})
@@ -32,3 +32,5 @@ mm = Mapping(symm_map)
 #cl = find_classes(mm, freqList)
 println("Starting Computation 2")
 @time cl = find_classes(mm, freqList, vl_len=len_freq)
+@time em = ExpandMapping(cl)
+write_fixed_width("FreqClasses.dat", em, sorted=true)

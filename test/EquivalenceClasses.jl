@@ -4,7 +4,7 @@
     eqC_1 = EquivalenceClasses(pred1, indl1)
     sol1 = Dict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
     @test typeof(eqC_1) === EquivalenceClasses
-    @test typeof(eqC_1.map) <: IndexMapping
+    @test typeof(eqC_1.map) <: ExpandMapping
     @test eqC_1.pred === pred1
     @test eqC_1.map == sol1
 end
