@@ -2,11 +2,12 @@
     pred1 = Predicate((x,y) -> x == y)
     indl1 = 1:5
     eqC_1 = EquivalenceClasses(pred1, indl1)
+    sol1_cl = [1,2,3,4,5]
     sol1 = Dict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
-    @test typeof(eqC_1) === EquivalenceClasses
-    @test typeof(eqC_1.map) <: ExpandMapping
-    @test eqC_1.pred === pred1
-    @test eqC_1.map == sol1
+    @test typeof(eqC_1) === EquivalenceClasses{Int64}
+    @test typeof(eqC_1.classes) === Dict{Int64,Int64}
+    @test eqC_1.f === pred1
+    @test sort(collect(values(eqC_1.classes))) == sol1_cl
 end
 
 @testset "complete tests" begin

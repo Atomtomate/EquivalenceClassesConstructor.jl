@@ -23,14 +23,9 @@ end
 
 @testset "mappings" begin
     m1 = Mapping(x -> [x])
-    sol1 = Dict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
     m2 = Mapping(x -> [-x])
-    sol2 = Dict{Int64,Array{Int64,1}}(0 => [],-4 => [],-3 => [3],-2 => [2],-1 => [1])
     m3 = Mapping(x -> [x+3,x-3])
     m5 = Mapping(x -> [x-3])
-    sol3 = Dict(-4 => [-1, 2],-3 => [0, 3],-2 => [1])
-    @test ExpandMapping(find_classes(m1, 1:5)).expandMap == sol1
-    @test ExpandMapping(find_classes(m2, -4:3,sorted=true)).expandMap == sol2
-    @test ExpandMapping(-4:3,find_classes(m3, -4:3,sorted=true)).expandMap == sol3
-    @test !ExpandMapping(-4:3,(find_classes(m5, -4:3)).expandMap == sol3)
+    @test m1(1) == [1]
+    @test m1(1) == m1.f(1)
 end

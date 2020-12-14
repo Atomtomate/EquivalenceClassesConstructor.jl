@@ -1,6 +1,7 @@
 using EquivalenceClassesConstructor
 using Test
 
+using Printf
 using DataStructures
 include("../src/Mappings.jl")
 include("../src/EquivalenceClasses.jl")

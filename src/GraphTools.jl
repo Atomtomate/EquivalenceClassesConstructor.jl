@@ -47,10 +47,8 @@ In case the vertex list is closed under the mapping (i.e. there exist no `x` in
 to improve performace.
 `vl_len` can be specified explicitly in cases where `length(vl)` does not work 
 (e.g. nested generator objects).
-The boolean `sorted` can be set to true, if the resulting expand map should be 
-sorted (one should make sure, that the elements of `vl` are comparable).
-For performace reasons this function can also be called with a normal Julia
-function instead of Mapping
+For performace reasons this function can also be called with a plain function 
+instead of a Mapping.
 
 # Examples
 ```
@@ -91,7 +89,7 @@ function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false)
     adj = isSymmetric ? build_adj_matrix(pred, vl) : 
         build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
     expandMap = invertDict(Dict(zip(vl,vl[find_classes(adj)])))
-    return EquivalenceClasses(pred,vl, vl[find_classes(adj)])
+    return EquivalenceClasses(pred,vl, Dict(zip(vl, vl[find_classes(adj)])))
 end
 
 # ====================  Auxiliary functions ====================

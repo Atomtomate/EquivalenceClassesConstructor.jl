@@ -33,4 +33,4 @@ function show(io::IO,el::ExpandMapping)
 end
 
 keys(m::ExpandMapping) = keys(m.map)
-minimal_set(m::ExpandMapping, sorted=true) = sorted ? sort(collect(keys(m))) : collect(keys(m))
+minimal_set(m::ExpandMapping; sorted=true) = sorted ? sort(collect(keys(m))) : collect(keys(m))
