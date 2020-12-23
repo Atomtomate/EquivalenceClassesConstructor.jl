@@ -1,5 +1,5 @@
 function write_fixed_width(io::IO, em::ExpandMapping; sorted=false, header_add=repeat(" ", 30)*"\n")
-    ll = sorted ? collect(keys(sort(em.map))) : collect(keys(em.map))
+    ll = sorted ? sort(collect(keys(em.map))) : collect(keys(em.map))
     write(io, "# Reduced           Mapped To \n") 
     write(io, "# === Header Start ===        \n")
     write(io, "    # of Elements             \n")
@@ -11,8 +11,6 @@ function write_fixed_width(io::IO, em::ExpandMapping; sorted=false, header_add=r
         write(io, rpad(k,30)*string(m[k])*"\n")
     end
 end
-
-write_fixed_width(em::ExpandMapping; sorted=false) = write_fixed_width(stdout, em, sorted=sorted)
 
 
 function write_fixed_width_3D(file::String, em::ExpandMapping; sorted=false)
@@ -33,4 +31,17 @@ function write_fixed_width_3D(io::IO, em::ExpandMapping; sorted=false,
     for k in ll
         @printf(io, " %9d %9d %9d\n", k...)
     end
+end
+
+function write_JLD(fname::String, em::ExpandMapping)
+    save(fname, "ExpandMap", em)
+end
+
+io_functions = (:write_fixed_width, :write_fixed_width_3D)
+
+# For all write functions f(io::IO, args...) generate wrappers f(args...) which writes
+# directly to stdout and f(s::String, args...) which opens/closes a file and writes to it.
+for ff in io_functions
+    @eval $ff(s::String, arg, args...; kwargs...) = (open(s,"w") do io; $ff(io,arg,args...; kwargs...); end)
+    @eval $ff(arg, args...; kwargs...) = $ff(stdout, arg, args...; kwargs...)
 end

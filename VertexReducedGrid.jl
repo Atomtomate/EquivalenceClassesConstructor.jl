@@ -3,8 +3,8 @@ Pkg.activate(".")
 using EquivalenceClassesConstructor
 using Printf
 
-nBose = 120
-nFermi = 120
+nBose = 20
+nFermi = 20
 shift = 1
 
 function symm_pred(l::Tuple{Int64,Int64,Int64}, r::Tuple{Int64,Int64,Int64})
@@ -36,4 +36,5 @@ maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("  %26d  \n", maxF)
 @time cl = find_classes(mm, freqList, vl_len=len_freq)
 @time em = ExpandMapping(cl)
-write_fixed_width("freqList.dat", em, sorted=true, header_add=headerstr)
+#write_fixed_width("freqList.dat", em, sorted=true, header_add=headerstr)
+write_JLD("freqList.jld", em)

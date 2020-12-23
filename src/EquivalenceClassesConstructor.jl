@@ -1,8 +1,8 @@
 module EquivalenceClassesConstructor
 
-using DataStructures, Printf
+using DataStructures, Printf, JLD
 export Predicate, Mapping, ExpandMapping, EquivalenceClasses, find_classes, minimal_set
-export write_fixed_width
+export write_fixed_width, write_JLD
 
 
   include("./Mappings.jl")

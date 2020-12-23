@@ -3,6 +3,7 @@ using Test
 
 using Printf
 using DataStructures
+using JLD
 include("../src/Mappings.jl")
 include("../src/EquivalenceClasses.jl")
 include("../src/Types.jl")
