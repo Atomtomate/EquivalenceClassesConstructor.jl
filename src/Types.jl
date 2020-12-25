@@ -18,6 +18,7 @@ function ExpandMapping(vl::AbstractArray{T,1}, classes::Dict{T,Int64}; sorted=fa
     return ExpandMapping(expandMap)
 end
 
+
 ExpandMapping(eqc::EquivalenceClasses{T}; sorted=false) where T = ExpandMapping(eqc.full, eqc.classes, sorted=sorted)
 
 Base.hash(a::ExpandMapping, h::UInt) = hash(a.map, hash(:ExpandMapping, h))
