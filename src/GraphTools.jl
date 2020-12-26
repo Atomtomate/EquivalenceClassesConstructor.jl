@@ -12,12 +12,12 @@ julia> find_classes(convert(BitArray, [0 1 0; 1 0 0; 0 0 0]))
 ```
 """
 function find_classes(adj::BitArray{2})
-  classes = collect(1:size(adj,1))              # every node has its own class at the start
-  cc = 1                                        # current class counter
+  vlR = UnitRange{UInt32}(1:size(adj,1))
+  classes = collect(vlR)                        # every node has its own class at the start
   openL = trues(size(adj,1))                    # no vertices have been visited yet
-  for i in 1:size(adj,1)                        # check all vertices at least once
+  for i in vlR                                  # check all vertices at least once
     !openL[i] && continue                       # if node already checked, continue
-    classes[i] = cc                             # current node has class cc
+    classes[i] = i                              # current node has class i
     indL = [i]                                  # add current vertex to search list
     while !isempty(indL)                        # search through all reachable vertices
       j = pop!(indL)                            # first vertex in index List is next candidate
@@ -25,9 +25,8 @@ function find_classes(adj::BitArray{2})
       openL[j] = false                          # set current node to visited
       neighbors = findall(adj[i,:] .& openL)    # add all adjacent AND open vertices to class
       indL = union(neighbors,indL)              # without double entries
-      classes[indL] .= cc                       # set all neighbors to current class
+      classes[indL] .= i                        # set all neighbors to current class
     end
-    cc += 1
     sum(openL) == 0 && break                    # no more open vertices left, return
   end
   return classes
@@ -57,25 +56,29 @@ instead of a Mapping.
 find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl)) where T = find_classes(m.f, vl, vl_len=vl_len)
 
 function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl)) where T
-  classes = Dict(zip(vl,1:vl_len))
-  openL = Dict(zip(vl,trues(vl_len)))       # mark all vertices as open (not visited)
+  vlR = UnitRange{UInt32}(1:vl_len)
+  classes = Dict(zip(vl,vlR))
+  openL = Dict(zip(vl,trues(vl_len)))           # mark all vertices as open (not visited)
   searchL = Stack{eltype(vl)}()
-  @time for (i,vi) in enumerate(vl)                      # visit each entry at least once
-    !openL[vi] && continue                # if entry already checked, continue
-    classes[vi] = i                      # current node has class cc
-    push!(searchL, vi)                    # add current vertex to search list
-    while !isempty(searchL)               # search through all reachable entries
-      vj = pop!(searchL)                  # next vertex in index List is next candidate
-      classes[vj] = i
-      !openL[vj] && continue 
-      openL[vj] = false                   # set current node to visited
-      neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el))
-      for el in neighbors                 # add all adjacent AND open vertices to class, skip entries outside vl
-          push!(searchL, el)
+  @time @inbounds for i in vlR                  # visit each entry at least once
+    vi = vl[i]
+    if openL[vi]                              # if entry already checked, continue
+      classes[vi] = i                       # current node has class cc
+      push!(searchL, vi)                    # add current vertex to search list
+      while !isempty(searchL)               # search through all reachable entries
+        vj = pop!(searchL)                # next vertex in index List is next candidate
+        classes[vj] = i
+        if openL[vj]
+          openL[vj] = false             # set current node to visited
+          neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el))
+          for el in neighbors           # add all adjacent AND open vertices to class, skip entries outside vl
+            push!(searchL, el)
+          end
+        end
       end
     end
   end
-  return EquivalenceClasses(Mapping(m), vl, classes)
+  return @inbounds EquivalenceClasses(Mapping(m), classes)
 end
 
 """
@@ -88,8 +91,7 @@ See `find_classes(m::Mapping, vl)` for more information.
 function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false)
     adj = isSymmetric ? build_adj_matrix(pred, vl) : 
         build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
-    expandMap = invertDict(Dict(zip(vl,vl[find_classes(adj)])))
-    return EquivalenceClasses(pred,vl, Dict(zip(vl, vl[find_classes(adj)])))
+    return EquivalenceClasses(pred, Dict(zip(vl, find_classes(adj))))
 end
 
 # ====================  Auxiliary functions ====================
@@ -152,5 +154,3 @@ julia> EquivalenceClasses(Mapping((x)->[-x]),
 function EquivalenceClasses(m::Mapping, vl::AbstractArray)
   return find_classes(m,vl)
 end
-
-

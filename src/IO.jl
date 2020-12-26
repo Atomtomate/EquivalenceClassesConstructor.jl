@@ -35,8 +35,8 @@ end
 
 function write_JLD(fname::String, em::ExpandMapping, cl::EquivalenceClasses; bare=true)
     out = bare ? em.map : em
-    out2 = Dict(zip(keys(cl.classes),cl.full))
-    save(fname, "ExpandMap", out, "ReduceMap", out2)
+    out2 = unique(keys(cl.classes))
+    save(fname, "ExpandMap", out, "Reduced", out2)
 end
 
 io_functions = (:write_fixed_width, :write_fixed_width_3D)

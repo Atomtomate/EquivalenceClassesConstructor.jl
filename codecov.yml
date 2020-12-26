@@ -1,2 +1,3 @@
 ignore:
   - "VertexReducedGrid.jl"  # ignore folders and all its contents
+  - "VertexReducedGrid_full.jl"  # ignore folders and all its contents

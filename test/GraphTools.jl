@@ -22,5 +22,5 @@ end
     adj3 = convert(BitArray, [0 1 0; 1 0 0; 0 0 0])
     @test all(find_classes(adj1) .== collect(1:5))
     @test all(find_classes(adj2) .== ones(5))
-    @test all(find_classes(adj3) .== [1, 1, 2])
+    @test all(find_classes(adj3) .== UInt32.([1, 1, 3]))
 end

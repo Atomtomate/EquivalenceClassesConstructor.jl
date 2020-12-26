@@ -13,7 +13,7 @@
 """
     io = IOBuffer()
     cl = find_classes(Mapping(x -> [-x]), -4:3)
-    em = ExpandMapping(cl)
+    em = ExpandMapping(cl, collect(-4:3))
     write_fixed_width(io, em, sorted=true)
     @test String(take!(io)) == res1 
 end
@@ -21,8 +21,8 @@ end
 @testset "JLD" begin
     io = IOBuffer()
     cl = find_classes(Mapping(x -> [-x]), -4:3)
-    em = ExpandMapping(cl)
-    write_JLD("tmp_save.jld", em)
+    em = ExpandMapping(cl, collect(-4:3))
+    write_JLD("tmp_save.jld", em, cl)
     d = load("tmp_save.jld")
     @test em == d["ExpandMap"]
     rm("tmp_save.jld")
