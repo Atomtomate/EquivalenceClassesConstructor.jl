@@ -34,8 +34,8 @@ println("Starting Computation 2")
 maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("  %26d  \n", maxF)
 @time cl = find_classes(mm, freqList, vl_len=len_freq)
-@time em = ExpandMapping(cl)
+@time em = ExpandMap(cl)
 #write_fixed_width("freqList.dat", em, sorted=true, header_add=headerstr)
-#write_JLD("freqList.jld", em, cl)
+write_JLD("freqList.jld", em_2, rm_2, cl_2)
 
 

@@ -72,7 +72,8 @@ end
 
 
 println("Constructing Array")
-const freqList_int = map(x->tripleToInt(x..., nBh), [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)])
+freqList = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
+const freqList_int = map(x->tripleToInt(x..., nBh), freqList)
 const len_freq = (2*nBose+1)*(2*nFermi)^2
 
 const mm_2 = Mapping(symm_map_int)
@@ -81,9 +82,10 @@ maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("  %26d  \n", maxF)
 @time cl_2 = find_classes(mm_2, freqList_int, vl_len=len_freq);
 full_t = intToTriple.(Int64,freqList_int);
-classes_t = OrderedDict((map(el->[intToTriple(Int64,el[1]),el[2]], collect(cl_2.classes))));
+classes_t = Dict((map(el->[intToTriple(Int64,el[1]),el[2]], collect(cl_2.classes))));
 cl_2_t = EquivalenceClasses(mm_2, classes_t);
 println("testtest")
-@time em_2 = ExpandMapping(cl_2_t);
+@time em_2 = ExpandMap(cl_2_t);
+@time rm_2 = ReduceMap(cl_2_t, freqList)
 #write_fixed_width("freqList_2.dat", em_2, sorted=true, header_add=headerstr);
-#write_JLD("freqList_2.jld", em_2, cl_2)
+write_JLD("freqList_2.jld", em_2, rm_2, cl_2)

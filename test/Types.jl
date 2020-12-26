@@ -30,17 +30,24 @@ end
     @test m1(1) == m1.f(1)
 end
 
-@testset "ExpandMapping" begin
+@testset "ReduceMap" begin
+    m2 = Mapping(x -> [-x])
+    cl2 = find_classes(m2, -3:5)
+    @test_throws MethodError ReduceMap(cl2)
+    @test ReduceMap(cl2, collect(-3:5)) == Dict(3 => -3, -3 => -3, 2 => -2, -2=>-2, 1 => -1, -1 => -1, 0 => 0, 4 => 4, 5 => 5)
+end
+
+@testset "ExpandMap" begin
     m1 = Mapping(x -> [x])
     m2 = Mapping(x -> [-x])
     cl1 = find_classes(m1, 1:5)
     cl2 = find_classes(m2, -3:5)
-    em = ExpandMapping(cl1, collect(1:5))
-    em2 = ExpandMapping(cl2)
+    em = ExpandMap(cl1, collect(1:5))
+    em2 = ExpandMap(cl2)
     @test sort(collect(keys(cl1.classes))) == sort(collect(keys(em.map)))
     @test minimal_set(em) == sort(collect(keys(em.map)))
     @test minimal_set(em, sorted=true) == [1,2,3,4,5]
-    @test sort(collect(keys(ExpandMapping(cl1.classes, collect(1:5), sorted=true).map))) == [1,2,3,4,5]
+    @test sort(collect(keys(ExpandMap(cl1.classes, collect(1:5), sorted=true).map))) == [1,2,3,4,5]
     @test Int.(sort(collect(keys(em2.map)))) == [1,2,3,4,8,9]
     @test all(sort(collect(values(em2.map))) .== [[-3,3],[-2],[-1,1],[0],[4],[5]])
 end

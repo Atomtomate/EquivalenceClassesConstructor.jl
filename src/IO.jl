@@ -1,4 +1,4 @@
-function write_fixed_width(io::IO, em::ExpandMapping; sorted=false, header_add=repeat(" ", 30)*"\n")
+function write_fixed_width(io::IO, em::ExpandMap; sorted=false, header_add=repeat(" ", 30)*"\n")
     ll = sorted ? sort(collect(keys(em.map))) : collect(keys(em.map))
     write(io, "# Reduced           Mapped To \n") 
     write(io, "# === Header Start ===        \n")
@@ -13,13 +13,13 @@ function write_fixed_width(io::IO, em::ExpandMapping; sorted=false, header_add=r
 end
 
 
-function write_fixed_width_3D(file::String, em::ExpandMapping; sorted=false)
+function write_fixed_width_3D(file::String, em::ExpandMap; sorted=false)
     open(file, "w") do f
-        write_fixed_width_3D(f, em::ExpandMapping, sorted=sorted)
+        write_fixed_width_3D(f, em::ExpandMap, sorted=sorted)
     end
 end
 
-function write_fixed_width_3D(io::IO, em::ExpandMapping; sorted=false, 
+function write_fixed_width_3D(io::IO, em::ExpandMap; sorted=false, 
         header_add = repeat(" ", 30)*"\n")
     ll = sorted ? collect(keys(sort(em.map))) : collect(keys(em.map))
     @printf(io, "# Reduced           Mapped To \n") 
@@ -33,10 +33,10 @@ function write_fixed_width_3D(io::IO, em::ExpandMapping; sorted=false,
     end
 end
 
-function write_JLD(fname::String, em::ExpandMapping, cl::EquivalenceClasses; bare=true)
+function write_JLD(fname::String, em::ExpandMap, rm::ReduceMap, cl::EquivalenceClasses; bare=true)
     out = bare ? em.map : em
     out2 = unique(keys(cl.classes))
-    save(fname, "ExpandMap", out, "Reduced", out2)
+    save(fname, "ExpandMap", out, "ReduceMap", rm, "Reduced", out2)
 end
 
 io_functions = (:write_fixed_width, :write_fixed_width_3D)
