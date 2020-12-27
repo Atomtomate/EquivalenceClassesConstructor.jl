@@ -1,3 +1,10 @@
+---
+slug: "/EquivalenceClasses/Types"
+date: "2020-11-12"
+title: "Equivalence Classes Types"
+categories: ["Programming", "Julia", "Memoization"]
+---
+
 # defining custom types
 
 In order to have a cleaner code base, we will define a number of custom types that behave like built in types in most cases.
