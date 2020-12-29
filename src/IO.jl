@@ -33,10 +33,9 @@ function write_fixed_width_3D(io::IO, em::ExpandMap; sorted=false,
     end
 end
 
-function write_JLD(fname::String, em::ExpandMap, rm::ReduceMap, cl::EquivalenceClasses; bare=true)
+function write_JLD(fname::String, rm::ReduceMap, em::ExpandMap; bare=true)
     out = bare ? em.map : em
-    out2 = unique(keys(cl.classes))
-    save(fname, "ExpandMap", out, "ReduceMap", rm, "Reduced", out2)
+    save(fname, "ExpandMap", out, "ReduceMap", rm)
 end
 
 io_functions = (:write_fixed_width, :write_fixed_width_3D)

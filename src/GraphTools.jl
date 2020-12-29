@@ -78,7 +78,7 @@ function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl)) wh
       end
     end
   end
-  return @inbounds EquivalenceClasses(Mapping(m), classes)
+  return @inbounds ReduceMap(classes)
 end
 
 """
@@ -91,7 +91,7 @@ See `find_classes(m::Mapping, vl)` for more information.
 function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false)
     adj = isSymmetric ? build_adj_matrix(pred, vl) : 
         build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
-    return EquivalenceClasses(pred, Dict(zip(vl, find_classes(adj))))
+    return ReduceMap(Dict(zip(vl, find_classes(adj))))
 end
 
 # ====================  Auxiliary functions ====================

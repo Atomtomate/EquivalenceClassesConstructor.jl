@@ -1,12 +1,13 @@
 name = "EquivalenceClassesConstructor"
 uuid = "b0d053df-94a8-4c0c-9762-4584a2fcd8b0"
 authors = ["Julian Stobbe <Atomtomate@gmx.de> and contributors"]
-version = "0.1.0"
+version = "0.5.0"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
 JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
+Lazy = "50d2b5c4-7a5e-59d5-8109-a42b560f39c0"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 

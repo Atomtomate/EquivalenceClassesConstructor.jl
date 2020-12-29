@@ -12,18 +12,18 @@
 0                             Int64[]
 """
     io = IOBuffer()
-    cl = find_classes(Mapping(x -> [-x]), -4:3)
-    em = ExpandMap(cl, collect(-4:3))
+    rm = find_classes(Mapping(x -> [-x]), -4:3)
+    em = ExpandMap(rm, collect(-4:3))
     write_fixed_width(io, em, sorted=true)
-    @test String(take!(io)) == res1 
+    out = String(take!(io))
+    @test out == res1 
 end
 
 @testset "JLD" begin
     io = IOBuffer()
-    cl = find_classes(Mapping(x -> [-x]), -4:3)
-    em = ExpandMap(cl, collect(-4:3))
-    redm = ReduceMap(cl, collect(-4:3))
-    write_JLD("tmp_save.jld", em, redm, cl)
+    rem = find_classes(Mapping(x -> [-x]), -4:3)
+    em = ExpandMap(rem, collect(-4:3))
+    write_JLD("tmp_save.jld", rem, em)
     d = load("tmp_save.jld")
     @test em == d["ExpandMap"]
     rm("tmp_save.jld")
