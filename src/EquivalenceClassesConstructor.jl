@@ -2,7 +2,7 @@ module EquivalenceClassesConstructor
 
 using DataStructures, Printf, JLD, StaticArrays, Lazy
 export Predicate, Mapping, ReduceMap, ExpandMap, EquivalenceClasses, find_classes, minimal_set
-export toDirectMap, toIndexMap
+export toDirectMap, toIndexMap, labels
 export write_fixed_width, write_JLD
 
 

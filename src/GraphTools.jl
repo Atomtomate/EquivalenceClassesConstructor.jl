@@ -44,6 +44,7 @@ n place.
 In case the vertex list is closed under the mapping (i.e. there exist no `x` in 
 `vl` such that `m(x)` is not in `vl`), `closed` can be set to `false` in order
 to improve performace.
+for that class. By specifying `continuous = true`,
 `vl_len` can be specified explicitly in cases where `length(vl)` does not work 
 (e.g. nested generator objects).
 For performace reasons this function can also be called with a plain function 

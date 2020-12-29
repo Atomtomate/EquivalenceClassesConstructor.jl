@@ -2,9 +2,10 @@ using Pkg
 Pkg.activate(".")
 using EquivalenceClassesConstructor
 using Printf, DataStructures
+using JLD
 
-const nBose = 80
-const nFermi = 80
+const nBose = 5
+const nFermi = 5
 const shift = 0
 
 # ===== Test with integers =====
@@ -82,10 +83,10 @@ maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("  %26d  \n", maxF)
 @time cl_2 = find_classes(mm_2, freqList_int, vl_len=len_freq);
 full_t = intToTriple.(Int64,freqList_int);
-classes_t = Dict((map(el->[intToTriple(Int64,el[1]),el[2]], collect(cl_2.classes))));
-cl_2_t = EquivalenceClasses(mm_2, classes_t);
+classes_t = Dict((map(el->[intToTriple(Int64,el[1]),el[2]], collect(cl_2.map))));
 println("testtest")
-@time em_2 = ExpandMap(cl_2_t);
-@time rm_2 = ReduceMap(cl_2_t, freqList)
+@time rm_2 = toDirectMap(ReduceMap(classes_t), freqList);
+@time em_2 = ExpandMap(rm_2);
 #write_fixed_width("freqList_2.dat", em_2, sorted=true, header_add=headerstr);
-write_JLD("freqList_2.jld", em_2, rm_2, cl_2)
+#write_JLD("freqList_2.jld", rm_2, em_2)
+save("freqList.jld", "ExpandMap", em_2, "ReduceMap", rm_2, "nFermi", nFermi, "nBose", nBose, "shift", shift)
