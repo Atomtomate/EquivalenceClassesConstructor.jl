@@ -44,6 +44,11 @@ julia> 2:30
 ((m::Mapping)(x::T)::AbstractArray{T,1}) where T = m.f(x)
 
 # ========== ReduceMap =========
+"""
+    ReduceMap
+
+TODO: implement
+"""
 struct ReduceMap{K, V} <: AbstractDict{K,V}
     map::Dict{K,V}
     function ReduceMap(d::Dict{K1,V1}) where {K1,V1}
@@ -53,8 +58,8 @@ struct ReduceMap{K, V} <: AbstractDict{K,V}
 end
 
 function ReduceMap_TConstr(::Type{K}, ::Type{V}) where {K, V}
-    if !((K === V) || (V === UInt32))
-        throw(TypeError(:ReduceMap,"Key and Value must have the same type, OR Value must be UInt32", Union{K,UInt32}, V))
+    if !((K === V) || ((V === UInt32) || (V === Int64)))
+        throw(TypeError(:ReduceMap,"Key and Value must have the same type, OR Value must be UInt32/Int64", Union{K,UInt32}, V))
      end
      return nothing
 end
@@ -94,10 +99,10 @@ Constructs mapping from a set of representatives of classes to full set using
 a ReduceMap `rm`.
 Each lit of mappings to the full can be ordered by setting `sorted`.
 """
-struct ExpandMap{K,V <: Union{K, UInt32}}
+struct ExpandMap{K,V <: Union{K, Int64, UInt32}}
     map::Dict{V,Array{K,1}}
     function ExpandMap(rm::ReduceMap{K1,V1}, orderedSet=nothing; sorted=false) where {K1,V1}
-        if V1 == UInt32 && orderedSet != nothing 
+        if (V1 == UInt32 || V1 == Int64) && orderedSet != nothing 
             new{K1,K1}(invertDict(toDirectMap(rm, orderedSet).map, sorted=sorted))
         else
             new{K1,V1}(invertDict(rm.map, sorted=sorted))
@@ -131,7 +136,7 @@ minimal_set(m::ExpandMap; sorted=true) = sorted ? sort(collect(keys(m))) : colle
 minimal_set(m::ReduceMap; sorted=true) = sorted ? sort(collect(unique(values(m)))) : collect(unique(values(m)))
 
 """
-    labels(m::ReduceMap)
+    labelsMap(m::ReduceMap)
 Transforms values to set of continuous numbers.
 
 # Examples
@@ -141,13 +146,12 @@ julia> ReduceMap{Int64,Int64} with 3 entries:
   3 => 5
   1 => 1
 """
-function labels(m::ReduceMap)::ReduceMap
-    max_ind = maximum(values(m))
+function labelsMap(m::ReduceMap)::ReduceMap
     vv = unique(values(m))
-    lookup = Dict(zip(vv, UInt32.(1:length(vv))))
-    res = copy(m)
+    lookup = Dict{keytype(m), Int64}(zip(vv, 1:length(vv)))
+    res = Dict{keytype(m), Int64}()
     for (k,v) in m
         res[k] = lookup[v]
     end
-    return res
+    return ReduceMap(res)
 end

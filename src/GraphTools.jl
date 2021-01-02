@@ -54,9 +54,9 @@ instead of a Mapping.
 ```
 ```
 """
-find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl)) where T = find_classes(m.f, vl, vl_len=vl_len)
+find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl), labels=false) where T = find_classes(m.f, vl, vl_len=vl_len, labels=labels)
 
-function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl)) where T
+function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), labels=false) where T
   vlR = UnitRange{UInt32}(1:vl_len)
   classes = Dict(zip(vl,vlR))
   openL = Dict(zip(vl,trues(vl_len)))           # mark all vertices as open (not visited)
@@ -79,7 +79,7 @@ function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl)) wh
       end
     end
   end
-  return @inbounds ReduceMap(classes)
+  return @inbounds labels ? labelsMap(ReduceMap(classes)) : ReduceMap(classes)
 end
 
 """
@@ -89,10 +89,11 @@ returns an array of length `length(vl)` with each entry with index `i` being
 a unique identifier for the equivalency class of the node `i`.
 See `find_classes(m::Mapping, vl)` for more information.
 """
-function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false)
+function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false, labels=false)
     adj = isSymmetric ? build_adj_matrix(pred, vl) : 
         build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
-    return ReduceMap(Dict(zip(vl, find_classes(adj))))
+    @inbounds res = ReduceMap(Dict(zip(vl, find_classes(adj))))
+    return labels ? labelsMap(res) : res
 end
 
 # ====================  Auxiliary functions ====================
@@ -135,8 +136,8 @@ julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
                           [(i,j) for i in -2:2 for j in 4:7])
 ```
 """
-function EquivalenceClasses(pred::Predicate, vl::AbstractArray)
-    return find_classes(pred,vl)
+function EquivalenceClasses(pred::Predicate, vl::AbstractArray; labels=false)
+    return find_classes(pred,vl, labels=labels)
 end
 
 
@@ -152,6 +153,6 @@ julia> EquivalenceClasses(Mapping((x)->[-x]),
                           [(i,j) for i in -2:2 for j in 4:7])
 ```
 """
-function EquivalenceClasses(m::Mapping, vl::AbstractArray)
-  return find_classes(m,vl)
+function EquivalenceClasses(m::Mapping, vl::AbstractArray, labels=false)
+  return find_classes(m,vl, labels=labels)
 end

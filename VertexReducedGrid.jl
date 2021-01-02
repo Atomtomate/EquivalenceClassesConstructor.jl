@@ -81,12 +81,12 @@ const mm_2 = Mapping(symm_map_int)
 println("Starting Computation 3")
 maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("  %26d  \n", maxF)
-@time cl_2 = find_classes(mm_2, freqList_int, vl_len=len_freq);
-full_t = intToTriple.(Int64,freqList_int);
-classes_t = Dict((map(el->[intToTriple(Int64,el[1]),el[2]], collect(cl_2.map))));
+@time redMap_ui = find_classes(mm_2, freqList_int, vl_len=len_freq);
+@time redMap_ui_labels = labelsMap(redMap_ui)
 println("testtest")
-@time rm_2 = toDirectMap(ReduceMap(classes_t), freqList);
-@time em_2 = ExpandMap(rm_2);
-#write_fixed_width("freqList_2.dat", em_2, sorted=true, header_add=headerstr);
-#write_JLD("freqList_2.jld", rm_2, em_2)
-save("freqList.jld", "ExpandMap", em_2, "ReduceMap", rm_2, "nFermi", nFermi, "nBose", nBose, "shift", shift)
+redMap = ReduceMap((map(el->[intToTriple(Int64,el[1]),el[2]], collect(redMap_ui_labels.map))));
+@time expMap = ExpandMap(redMap);
+#@time rm_2 = toDirectMap(ReduceMap(classes_t), freqList);
+#write_fixed_width("freqList_2.dat", expMap, sorted=true, header_add=headerstr);
+#write_JLD("freqList_2.jld", rm_2, expMap)
+save("freqList.jld", "ExpandMap", expMap, "ReduceMap", redMap, "nFermi", nFermi, "nBose", nBose, "shift", shift)
