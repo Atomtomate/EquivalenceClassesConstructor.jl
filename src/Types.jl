@@ -148,8 +148,8 @@ julia> ReduceMap{Int64,Int64} with 3 entries:
 """
 function labelsMap(m::ReduceMap)::ReduceMap
     vv = unique(values(m))
-    lookup = Dict{keytype(m), Int64}(zip(vv, 1:length(vv)))
-    res = Dict{keytype(m), Int64}()
+    lookup = Dict{keytype(m), UInt32}(zip(vv, 1:length(vv)))
+    res = Dict{keytype(m), UInt32}()
     for (k,v) in m
         res[k] = lookup[v]
     end

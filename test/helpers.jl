@@ -5,6 +5,6 @@
 end
 
 @testset "Labels" begin
-    @test sort(collect(values(labels(cl1)))) == UInt32.(1:length(cl1))
-    @test sort(collect(values(labels(cl2)))) == UInt32.([1,2,3,3,4,4,5,5,6])
+    @test sort(collect(values(labelsMap(cl1)))) == UInt32.(1:length(cl1))
+    @test sort(collect(values(labelsMap(cl2)))) == UInt32.([1,2,3,3,4,4,5,5,6])
 end
