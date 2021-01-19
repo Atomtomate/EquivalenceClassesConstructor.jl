@@ -1,10 +1,10 @@
-function write_fixed_width(io::IO, em::ExpandMap; sorted=false, header_add=repeat(" ", 30)*"\n")
+function write_fixed_width(io::IO, em::ExpandMap; sorted=false, header_add=repeat(" ", 10))
+    length(header_add) != 10 && throw(ArgumentError("header string must be 10 characters long"))
     ll = sorted ? sort(collect(keys(em.map))) : collect(keys(em.map))
     write(io, "# Reduced           Mapped To \n") 
     write(io, "# === Header Start ===        \n")
     write(io, "    # of Elements             \n")
-    write(io, rpad(30,length(em.map))*"\n")
-    write(io, header_add)
+    write(io, rpad(" "*string(length(em.map))*" "*header_add, 30, " ")*"\n")
     write(io, "# === Header End ===          \n")
     m = em.map
     for k in ll
@@ -20,13 +20,9 @@ function write_fixed_width_3D(file::String, em::ExpandMap; sorted=false)
 end
 
 function write_fixed_width_3D(io::IO, em::ExpandMap; sorted=false, 
-        header_add = repeat(" ", 30)*"\n")
-    ll = sorted ? collect(keys(sort(em.map))) : collect(keys(em.map))
-    @printf(io, "# Reduced           Mapped To \n") 
-    @printf(io, "# === Header Start ===        \n")
-    @printf(io, "    # of Elements             \n")
-    @printf(io, "  %12d                \n", length(em.map))
-    @printf(io, "%s", header_add)
+        header_add = repeat(" ", 10))
+    length(header_add) != 10 && throw(ArgumentError("header string must be 10 characters long"))
+    @printf(io, "  %12d      %s\n", length(em.map),header_add)
     @printf(io, "# === Header End ===          \n")
     for k in ll
         @printf(io, " %9d %9d %9d\n", k...)

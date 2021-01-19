@@ -1,6 +1,12 @@
-function invertDict(D::Dict; sorted=false)
+"""
+     invertDict(D::OrderedDict; sorted=false)
+
+For a given injective dictionary `D` with key set `K` and value set `V`, this
+function returns a dict with key set `V` and values `Array{K}`.
+"""
+function invertDict(D::OrderedDict; sorted=false)
     uniqueV = unique(values(D))
-    invD = Dict{valtype(D),Array{keytype(D),1}}(e => Array{valtype(D),1}() for e  in uniqueV)
+    invD = OrderedDict{valtype(D),Array{keytype(D),1}}(e => Array{valtype(D),1}() for e  in uniqueV)
     for (k,v) in D
 		!(v == k) && push!(invD[v], k)
     end

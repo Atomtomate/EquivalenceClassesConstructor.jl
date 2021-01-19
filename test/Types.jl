@@ -21,12 +21,12 @@ end
 
 @testset "ReduceMap" begin
     @test_throws TypeError ReduceMap(1 => 2.0)   
-    @test ReduceMap(1=>2).map == Dict(1=>2)
-    @test ReduceMap(Dict(1=>2)).map == Dict(1=>2)
-    @test ReduceMap(Dict(1=>UInt32(2))).map == Dict(1=>UInt32(2))
-    @test ReduceMap(1=>2, 3=>4).map == Dict(1=>2,3=>4)
-    @test ReduceMap(i => i+1 for i in 1:2) == Dict(1=>2,2=>3)
-    @test ReduceMap(zip([1,3],[2,4])).map == Dict(1=>2, 3=>4)
+    @test ReduceMap(1=>2).map == OrderedDict(1=>2)
+    @test ReduceMap(OrderedDict(1=>2)).map == OrderedDict(1=>2)
+    @test ReduceMap(OrderedDict(1=>UInt32(2))).map == OrderedDict(1=>UInt32(2))
+    @test ReduceMap(1=>2, 3=>4).map == OrderedDict(1=>2,3=>4)
+    @test ReduceMap(i => i+1 for i in 1:2) == OrderedDict(1=>2,2=>3)
+    @test ReduceMap(zip([1,3],[2,4])).map == OrderedDict(1=>2, 3=>4)
     @test cl2.map == cl2_res_index
     @test toDirectMap(cl2, vl2) == cl2_res_direct 
     @test toIndexMap(toDirectMap(cl2, vl2),vl2) == cl2_res_index
@@ -51,9 +51,9 @@ end
     indl1 = 1:5
     eqC_1 = EquivalenceClasses(pred1, indl1)
     sol1_cl = [1,2,3,4,5]
-    sol1 = Dict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
+    sol1 = OrderedDict{Int64,Array{Int64,1}}(zip(1:5,[[], [], [], [], []]))
     @test typeof(eqC_1) === ReduceMap{Int64,UInt32}
-    @test typeof(eqC_1.map) === Dict{Int64,UInt32}
+    @test typeof(eqC_1.map) === OrderedDict{Int64,UInt32}
     @test sort(collect(values(eqC_1.map))) == sol1_cl
 end
 

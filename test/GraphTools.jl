@@ -24,3 +24,12 @@ end
     @test all(find_classes(adj2) .== ones(5))
     @test all(find_classes(adj3) .== UInt32.([1, 1, 3]))
 end
+
+@testset "Find Classes Paths" begin
+    m1(x) = [-x, x+3]
+    cl, ops = find_classes(m1,[0x00001, 0x00002],-3:5)
+    println("---")
+    println(cl)
+    println(ops)
+    println("---")
+end

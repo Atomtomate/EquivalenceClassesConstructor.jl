@@ -1,3 +1,4 @@
+# ====================  Find Classes  ====================
 """
     find_classes(adj::BitArray{2})
 
@@ -54,32 +55,32 @@ instead of a Mapping.
 ```
 ```
 """
-find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl), labels=false) where T = find_classes(m.f, vl, vl_len=vl_len, labels=labels)
+find_classes(m::Mapping, vl::AbstractArray{T,1}; vl_len=length(vl)) where T = find_classes(m.f, vl, vl_len=vl_len)
 
-function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl), labels=false) where T
+function find_classes(m::Function, vl::AbstractArray{T,1}; vl_len=length(vl)) where T
   vlR = UnitRange{UInt32}(1:vl_len)
-  classes = Dict(zip(vl,vlR))
+  classes = OrderedDict(zip(vl,vlR))
   openL = Dict(zip(vl,trues(vl_len)))           # mark all vertices as open (not visited)
   searchL = Stack{eltype(vl)}()
   @time @inbounds for i in vlR                  # visit each entry at least once
     vi = vl[i]
     if openL[vi]                              # if entry already checked, continue
-      classes[vi] = i                       # current node has class cc
       push!(searchL, vi)                    # add current vertex to search list
       while !isempty(searchL)               # search through all reachable entries
         vj = pop!(searchL)                # next vertex in index List is next candidate
         classes[vj] = i
         if openL[vj]
           openL[vj] = false             # set current node to visited
-          neighbors = (el for el in m(vj) if !(el in searchL) && haskey(openL,el))
-          for el in neighbors           # add all adjacent AND open vertices to class, skip entries outside vl
-            push!(searchL, el)
+          for (j,el) in enumerate(m(vj))           # add all adjacent AND open vertices to class, skip entries outside vl
+            if !(el in searchL) && haskey(openL,el) && openL[el]
+                push!(searchL, el)
+            end
           end
         end
       end
     end
   end
-  return @inbounds labels ? labelsMap(ReduceMap(classes)) : ReduceMap(classes)
+  return @inbounds ReduceMap(classes)
 end
 
 """
@@ -89,11 +90,43 @@ returns an array of length `length(vl)` with each entry with index `i` being
 a unique identifier for the equivalency class of the node `i`.
 See `find_classes(m::Mapping, vl)` for more information.
 """
-function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false, labels=false)
+function find_classes(pred::Predicate, vl::AbstractArray; isSymmetric=false)
     adj = isSymmetric ? build_adj_matrix(pred, vl) : 
         build_adj_matrix(Predicate((x,y) ->(pred(x,y) || pred(y,x))), vl)
-    @inbounds res = ReduceMap(Dict(zip(vl, find_classes(adj))))
-    return labels ? labelsMap(res) : res
+    @inbounds res = ReduceMap(OrderedDict(zip(vl, find_classes(adj))))
+    return res
+end
+
+
+# ====================  Find Paths  ====================
+function find_classes(m::Function, operations::Array{UInt32,1}, vl::AbstractArray{T,1}; vl_len=length(vl)) where T
+  vlR = UnitRange{UInt32}(1:vl_len)
+  parent = OrderedDict(zip(vl,vl))
+  parent_edge = OrderedDict(zip(vl,zeros(UInt32,vl_len)))
+  openL = Dict(zip(vl,trues(vl_len)))       # mark all vertices as open (not visited)
+  searchL = Stack{eltype(vl)}()
+  for i in vlR              # visit each entry at least once
+    vi = vl[i]
+    if openL[vi]                            # if entry already checked, continue
+      push!(searchL, vi)                    # add current vertex to search list
+      parent[vi] = vi
+      parent_edge[vi] = 0x00000
+      while !isempty(searchL)               # search through all reachable entries
+        vj = pop!(searchL)                  # next vertex in index List is next candidate
+        if openL[vj]
+          openL[vj] = false                 # set current node to visited
+          for (j,el) in enumerate(m(vj))    # add all adjacent AND open vertices to class, skip entries outside vl
+              if !(el in searchL) && haskey(openL,el) && openL[el]
+                push!(searchL, el)
+                parent[el] = vj
+                parent_edge[el] = operations[j]
+            end
+          end
+        end
+      end
+    end
+  end
+  return parent, parent_edge
 end
 
 # ====================  Auxiliary functions ====================
@@ -136,8 +169,8 @@ julia> EquivalenceClasses(Predicate((x,y)->all(x .== -y)),
                           [(i,j) for i in -2:2 for j in 4:7])
 ```
 """
-function EquivalenceClasses(pred::Predicate, vl::AbstractArray; labels=false)
-    return find_classes(pred,vl, labels=labels)
+function EquivalenceClasses(pred::Predicate, vl::AbstractArray)
+    return find_classes(pred,vl)
 end
 
 
@@ -153,6 +186,10 @@ julia> EquivalenceClasses(Mapping((x)->[-x]),
                           [(i,j) for i in -2:2 for j in 4:7])
 ```
 """
-function EquivalenceClasses(m::Mapping, vl::AbstractArray, labels=false)
-  return find_classes(m,vl, labels=labels)
+function EquivalenceClasses(m::Mapping, vl::AbstractArray)
+  return find_classes(m,vl)
 end
+
+
+#function parent_to_classes(parent_map::Dict{T,T})
+#end

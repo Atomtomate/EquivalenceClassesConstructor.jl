@@ -47,25 +47,24 @@ julia> 2:30
 """
     ReduceMap
 
-TODO: implement
 """
 struct ReduceMap{K, V} <: AbstractDict{K,V}
-    map::Dict{K,V}
-    function ReduceMap(d::Dict{K1,V1}) where {K1,V1}
+    map::OrderedDict{K,V}
+    function ReduceMap(d::OrderedDict{K1,V1}) where {K1,V1}
         ReduceMap_TConstr(K1,V1)
-        new{K1,V1}(d)
+        new{K1,V1}(d, OrderedDict{K1,UInt32}())
     end
 end
 
 function ReduceMap_TConstr(::Type{K}, ::Type{V}) where {K, V}
-    if !((K === V) || ((V === UInt32) || (V === Int64)))
+    if !((K === V) || ((V === UInt32) || (V === Int64) || (V == Tuple{UInt32, UInt32})))
         throw(TypeError(:ReduceMap,"Key and Value must have the same type, OR Value must be UInt32/Int64", Union{K,UInt32}, V))
      end
      return nothing
 end
 
-ReduceMap(args...) = ReduceMap(Dict(args...))
-ReduceMap{K,V}() where {K,V} = ReduceMap(Dict{K,V}()) 
+ReduceMap(args...) = ReduceMap(OrderedDict(args...))
+ReduceMap{K,V}() where {K,V} = ReduceMap(OrderedDict{K,V}()) 
 
 # ---------- Dict Wrapper  ---------
 @forward ReduceMap.map (Base.show, Base.length, Base.iterate, Base.getindex, Base.setindex!)
@@ -148,8 +147,8 @@ julia> ReduceMap{Int64,Int64} with 3 entries:
 """
 function labelsMap(m::ReduceMap)::ReduceMap
     vv = unique(values(m))
-    lookup = Dict{keytype(m), UInt32}(zip(vv, 1:length(vv)))
-    res = Dict{keytype(m), UInt32}()
+    lookup = OrderedDict{keytype(m), UInt32}(zip(vv, 1:length(vv)))
+    res = OrderedDict{keytype(m), UInt32}()
     for (k,v) in m
         res[k] = lookup[v]
     end
