@@ -43,3 +43,17 @@ function check_for_equivalence_relation(f::Predicate, dom)
   #TODO: check transitivity
   return true
 end
+
+function minimal_set(parents::Dict{T,T}, vl::Array{T,1}) where T
+    vl_min = Array{T,1}()
+    map = Dict{Int64,Int64}()
+    used_i = 1
+    for (i,el) in enumerate(vl) 
+        if parents[el] == el
+            push!(vl_min, el)
+            map[i] = used_i
+            used_i += 1
+        end
+    end
+    return  map,vl_min
+end

@@ -99,10 +99,10 @@ end
 
 
 # ====================  Find Paths  ====================
-function find_classes(m::Function, operations::Array{UInt32,1}, vl::AbstractArray{T,1}; vl_len=length(vl)) where T
+function find_classes(m::Function, vl::AbstractArray{T,1}, operations::Array{UInt32,1}; vl_len=length(vl)) where T
   vlR = UnitRange{UInt32}(1:vl_len)
-  parent = OrderedDict(zip(vl,vl))
-  parent_edge = OrderedDict(zip(vl,zeros(UInt32,vl_len)))
+  parent = Dict(zip(vl,vl))
+  parent_edge = Dict(zip(vl,zeros(UInt32,vl_len)))
   openL = Dict(zip(vl,trues(vl_len)))       # mark all vertices as open (not visited)
   searchL = Stack{eltype(vl)}()
   for i in vlR              # visit each entry at least once

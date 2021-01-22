@@ -2,12 +2,12 @@ using Pkg
 Pkg.activate(".")
 using EquivalenceClassesConstructor
 using Printf, DataStructures
-using JLD
+using JLD2
 
 include("../vertexIntTriple.jl")
 
-const nBose = 100
-const nFermi = 100
+const nBose = 2
+const nFermi = 2
 const shift = 0
 
 # ===== Test with integers =====
@@ -38,11 +38,11 @@ end
     t2 = iu+ju-nBh
     t3 = iu+ku-nBh
     t4 = ju+nk-nBh
-    r1 = tripleToInt(ni, nj-UInt32(1), nk-UInt(1),nB,nB2) # c.c.: Op 2 (*)
-    r2 = tripleToInt(iu, ku, ju,nB,nB2)                   # time reversal: Op 1 (1)
-    r3 = oobConst                                         # double Crossing: Op 1 (1)
-    r4 = oobConst                                         # crossing c: Op 3 (-)
-    r5 = oobConst                                         # crossing c^t: Op 3 (-) 
+    r1 = tripleToInt(ni, nj-UInt32(1), nk-UInt(1),nB,nB2) # c.c.: Op 1 (*)
+    r2 = tripleToInt(iu, ku, ju,nB,nB2)                   # time reversal: Op 2 (1)
+    r3 = oobConst                                         # double Crossing: Op 3 (-)
+    r4 = oobConst                                         # crossing c: Op 4 (-)
+    r5 = oobConst                                         # crossing c^t: Op 5 (+) 
     if t2 < nB 
         if t1 < nB 
             r3 = tripleToInt(t1, ju, t2,nB,nB2)
@@ -55,6 +55,17 @@ end
         r4 = tripleToInt(t4, t3, ku,nB,nB2)
     end
     return r1,r2,r3,r4,r5
+end
+
+function uint_to_index(parents::Dict{UInt32,UInt32}, ops::Dict{UInt32,UInt32}, vl::Array{UInt32,1})
+    parents_new = Array{Int64}(undef, length(vl))
+    ops_new = Array{Int64}(undef, length(vl))
+    lookup = Dict(zip(vl,1:length(vl)))
+    for (i,el) in enumerate(vl)
+        parents_new[i] = lookup[parents[el]]
+        ops_new[i] = Int64(ops[el])
+    end
+    return parents_new, ops_new
 end
 
 
@@ -77,8 +88,13 @@ headerstr= @sprintf("%10d", maxF)
 #@time redMap_tri = ReduceMap((map(el->[intToTriple(Int64,el[1]),el[2]], collect(redMap.map))));
 #@time expMap_tri = ExpandMap(redMap_tri)
 #@time rm_2 = toDirectMap(ReduceMap(classes_t), freqList);
-@time parents, ops = find_classes(mm_2.f, freqList_int, UInt32.([2, 1, 1, 3, 3]), vl_len=len_freq);
+@time parents_int, ops_int = find_classes(mm_2.f, freqList_int, UInt32.([1, 2, 3, 4, 5]), vl_len=len_freq);
+@time freqRed_map, freqList_min_int = minimal_set(parents_int, freqList_int)
+freqList_min = intToTriple.(freqList_min_int)
+@time parents,ops = uint_to_index(parents_int, ops_int, freqList_int)
 #write_fixed_width("freqList_tri.dat", expMap_tri, sorted=true, header_add=headerstr);
 #write_JLD("freqList_2.jld", rm_2, expMap)
 #save("freqList.jld", "ExpandMap", expMap, "ReduceMap", redMap, "base", nB, "nFermi", 2*nFermi, "nBose", 2*nBose+1, "shift", shift, "offset", nBh)
-save("freqList_new.jld", "parents", parents, "ops", ops, "base", nB, "nFermi", 2*nFermi, "nBose", 2*nBose+1, "shift", shift, "offset", nBh)
+base = nB
+offset = nBh
+@save "freqList_new.jld2" freqRed_map freqList freqList_min parents ops nFermi nBose shift base offset
