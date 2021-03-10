@@ -79,17 +79,15 @@ const freqList_int = map(x->tripleToInt(x..., nBh,nB,nB2), freqList)
 const len_freq = (2*nBose+1)*(2*nFermi)^2
 
 const mm_2 = Mapping(symm_map_int)
-const mm_3 = Mapping(symm_map_identity)
 println("Starting Computation 3")
 maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("%10d", maxF)
 
-#TODO: uncomment this line: @time parents_int, ops_int = find_classes(mm_2.f, freqList_int, UInt32.([1, 2, 3, 4, 5]), vl_len=len_freq);
-@time parents_int, ops_int = find_classes(mm_3.f, freqList_int, UInt32.([1]), vl_len=len_freq);
+@time parents_int, ops_int = find_classes(mm_2.f, freqList_int, UInt32.([1, 2, 3, 4, 5]), vl_len=len_freq);
 @time freqRed_map, freqList_min_int = minimal_set(parents_int, freqList_int)
 freqList_min = intToTriple.(freqList_min_int)
 @time parents,ops = uint_to_index(parents_int, ops_int, freqList_int)
-write_fixed_width("freqList.dat", expMap_tri, sorted=true, header_add=headerstr);
+write_fixed_width("freqList.dat", freqList_min, sorted=true, header_add=headerstr);
 #write_JLD("freqList_2.jld", rm_2, expMap)
 #save("freqList.jld", "ExpandMap", expMap, "ReduceMap", redMap, "base", nB, "nFermi", 2*nFermi, "nBose", 2*nBose+1, "shift", shift, "offset", nBh)
 base = nB
