@@ -4,4 +4,5 @@
 *.dat
 *.bin
 *.jld
+*.jld2
 /docs/build/

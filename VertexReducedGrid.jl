@@ -7,8 +7,8 @@ using JLD2
 include("../vertexIntTriple.jl")
 
 const nBose = 2
-const nFermi = 2
-const shift = 0
+const nFermi = 3
+const shift = 1
 
 # ===== Test with integers =====
 println("Integer test")
@@ -23,6 +23,10 @@ const oobConst = tripleToInt(nB,0,0,nB,nB2)
     r,k = divrem(z,nB)
     i,j = divrem(r,nB)
     return tripleToInt(UInt32(-i+nBm1), UInt32(-j+nBm1-1),UInt32(-k+nBm1-1),nB,nB2)
+end
+
+@fastmath @inline function symm_map_identity(z::UInt32)
+    (z,)
 end
 
 @fastmath @inline function symm_map_int(z::UInt32)
@@ -75,26 +79,19 @@ const freqList_int = map(x->tripleToInt(x..., nBh,nB,nB2), freqList)
 const len_freq = (2*nBose+1)*(2*nFermi)^2
 
 const mm_2 = Mapping(symm_map_int)
+const mm_3 = Mapping(symm_map_identity)
 println("Starting Computation 3")
 maxF = nBose + 2*nFermi + 5
 headerstr= @sprintf("%10d", maxF)
-#@time redMap_ui = find_classes(mm_2, freqList_int, vl_len=len_freq);
-#@time redMap = labelsMap(redMap_ui)
-#@time expMap = ExpandMap(redMap);
 
-#@time redMap_ui = find_classes(mm_2, freqList_int, vl_len=len_freq);
-#@time redMap = labelsMap(redMap_ui)
-#@time expMap = ExpandMap(redMap);
-#@time redMap_tri = ReduceMap((map(el->[intToTriple(Int64,el[1]),el[2]], collect(redMap.map))));
-#@time expMap_tri = ExpandMap(redMap_tri)
-#@time rm_2 = toDirectMap(ReduceMap(classes_t), freqList);
-@time parents_int, ops_int = find_classes(mm_2.f, freqList_int, UInt32.([1, 2, 3, 4, 5]), vl_len=len_freq);
+#TODO: uncomment this line: @time parents_int, ops_int = find_classes(mm_2.f, freqList_int, UInt32.([1, 2, 3, 4, 5]), vl_len=len_freq);
+@time parents_int, ops_int = find_classes(mm_3.f, freqList_int, UInt32.([1]), vl_len=len_freq);
 @time freqRed_map, freqList_min_int = minimal_set(parents_int, freqList_int)
 freqList_min = intToTriple.(freqList_min_int)
 @time parents,ops = uint_to_index(parents_int, ops_int, freqList_int)
-#write_fixed_width("freqList_tri.dat", expMap_tri, sorted=true, header_add=headerstr);
+write_fixed_width("freqList.dat", expMap_tri, sorted=true, header_add=headerstr);
 #write_JLD("freqList_2.jld", rm_2, expMap)
 #save("freqList.jld", "ExpandMap", expMap, "ReduceMap", redMap, "base", nB, "nFermi", 2*nFermi, "nBose", 2*nBose+1, "shift", shift, "offset", nBh)
 base = nB
 offset = nBh
-@save "freqList_new.jld2" freqRed_map freqList freqList_min parents ops nFermi nBose shift base offset
+@save "freqList.jld2" freqRed_map freqList freqList_min parents ops nFermi nBose shift base offset
