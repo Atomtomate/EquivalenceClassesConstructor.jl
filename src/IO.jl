@@ -2,7 +2,6 @@
 function write_fixed_width(io::IO, minSet::Vector{Tuple{T, T, T}}; sorted=false, header_add=repeat(" ", 10)) where T
     length(header_add) != 10 && throw(ArgumentError("header string must be 10 characters long"))
     ll = sorted ? sort(minSet) : collect(minSet)
-    @printf(io, "# Reduced           Mapped To \n") 
     @printf(io, "# === Header Start ===        \n")
     @printf(io, "    # of Elements             \n")
     @printf(io, "  %12d      %s\n", length(minSet), header_add)
@@ -15,7 +14,6 @@ end
 function write_fixed_width(io::IO, minSet::Vector; sorted=false, header_add=repeat(" ", 10))
     length(header_add) != 10 && throw(ArgumentError("header string must be 10 characters long"))
     ll = sorted ? sort(minSet) : collect(minSet)
-    write(io, "# Reduced           Mapped To \n") 
     write(io, "# === Header Start ===        \n")
     write(io, "    # of Elements             \n")
     write(io, rpad(" "*string(length(minSet))*" "*header_add, 30, " ")*"\n")

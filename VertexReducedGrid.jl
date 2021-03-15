@@ -4,11 +4,12 @@ using EquivalenceClassesConstructor
 using Printf, DataStructures
 using JLD2
 
-include("../vertexIntTriple.jl")
+include("./vertexIntTriple.jl")
 
-const nBose = 2
-const nFermi = 3
-const shift = 1
+const nBose = 150
+const nFermi = 150
+const shift = 0
+path = "/scratch/usr/hhpstobb/grids/b$(nBose)_f$(nFermi)_s$(shift)"
 
 # ===== Test with integers =====
 println("Integer test")
@@ -87,9 +88,11 @@ headerstr= @sprintf("%10d", maxF)
 @time freqRed_map, freqList_min_int = minimal_set(parents_int, freqList_int)
 freqList_min = intToTriple.(freqList_min_int)
 @time parents,ops = uint_to_index(parents_int, ops_int, freqList_int)
-write_fixed_width("freqList.dat", freqList_min, sorted=true, header_add=headerstr);
+
+mkpath(path)
+write_fixed_width(path*"/freqList.dat", freqList_min, sorted=true, header_add=headerstr);
 #write_JLD("freqList_2.jld", rm_2, expMap)
 #save("freqList.jld", "ExpandMap", expMap, "ReduceMap", redMap, "base", nB, "nFermi", 2*nFermi, "nBose", 2*nBose+1, "shift", shift, "offset", nBh)
 base = nB
 offset = nBh
-@save "freqList.jld2" freqRed_map freqList freqList_min parents ops nFermi nBose shift base offset
+@save path*"/freqList.jld2" freqRed_map freqList freqList_min parents ops nFermi nBose shift base offset
