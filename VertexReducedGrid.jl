@@ -81,7 +81,7 @@ const len_freq = (2*nBose+1)*(2*nFermi)^2
 
 const mm_2 = Mapping(symm_map_int)
 println("Starting Computation 3")
-maxF = nBose + 2*nFermi + 5
+maxF = nBose + 2*nFermi + shift*ceil(Int,nBose/2) + 5
 headerstr= @sprintf("%10d", maxF)
 
 @time parents_int, ops_int = find_classes(mm_2.f, freqList_int, UInt32.([1, 2, 3, 4, 5]), vl_len=len_freq);
