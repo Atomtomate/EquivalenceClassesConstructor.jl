@@ -23,7 +23,6 @@ end
 
 Given a Predicate `f` over a domain `dom`, return `true` if `f`
 is a equivalence relation, `false` otherwise.
-One can create a symmetric equivalency relation with [`make_symmetric(f)`](@ref)
 TODO: check transitivity.
 
 # Examples
