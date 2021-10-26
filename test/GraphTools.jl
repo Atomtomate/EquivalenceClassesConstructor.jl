@@ -27,7 +27,7 @@ end
 
 @testset "Find Classes Paths" begin
     m1(x) = [-x, x+3]
-    cl, ops = find_classes(m1,[0x00001, 0x00002],-3:5)
+    cl, ops = find_classes(m1,-3:5)
     println("---")
     println(cl)
     println(ops)

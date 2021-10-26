@@ -6,13 +6,12 @@ using JLD2
 
 include("./vertexIntTriple.jl")
 
-const nBose = 150
-const nFermi = 150
-const shift = 0
-path = "/scratch/usr/hhpstobb/grids/b$(nBose)_f$(nFermi)_s$(shift)"
+const nBose = 50
+const nFermi = 50
+const shift = 1
+path = "/scratch/projects/hhp00048/grids/b$(nBose)_f$(nFermi)_s$(shift)"
 
 # ===== Test with integers =====
-println("Integer test")
 const nB = UInt32(2*maximum((2*nFermi+shift*ceil(nBose/2),2*nBose+1))+1)
 const nBh = floor(UInt32, nB/2)
 (nB^2 > typemax(UInt32)) && throw(ArgumentError("nBose or nFermi too large for UInt32 operations."))
@@ -95,4 +94,28 @@ write_fixed_width(path*"/freqList.dat", freqList_min, sorted=true, header_add=he
 #save("freqList.jld", "ExpandMap", expMap, "ReduceMap", redMap, "base", nB, "nFermi", 2*nFermi, "nBose", 2*nBose+1, "shift", shift, "offset", nBh)
 base = nB
 offset = nBh
-@save path*"/freqList.jld2" freqRed_map freqList freqList_min parents ops nFermi nBose shift base offset
+filep = path*"/freqList.jld2"
+println("writing to $filep")
+println(typeof(freqRed_map))
+jldopen(filep, "w") do outf
+    outf["freqRed_map"] = freqRed_map
+    println("2")
+    outf["freqList"] = freqList
+    println("2")
+    outf["freqList_min"] = freqList_min
+    println("2")
+    outf["parents"] = parents
+    println("2")
+    outf["ops"] = ops
+    println("2")
+    outf["nFermi"] = nFermi
+    println("2")
+    outf["nBose"] = nBose
+    println("2")
+    outf["shift"] = shift
+    println("2")
+    outf["base"] = base
+    println("2")
+    outf["offset"] = offset
+    println("2")
+end

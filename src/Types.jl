@@ -52,7 +52,7 @@ struct ReduceMap{K, V} <: AbstractDict{K,V}
     map::OrderedDict{K,V}
     function ReduceMap(d::OrderedDict{K1,V1}) where {K1,V1}
         ReduceMap_TConstr(K1,V1)
-        new{K1,V1}(d, OrderedDict{K1,UInt32}())
+        new{K1,V1}(d)
     end
 end
 
