@@ -99,23 +99,13 @@ println("writing to $filep")
 println(typeof(freqRed_map))
 jldopen(filep, "w") do outf
     outf["freqRed_map"] = freqRed_map
-    println("2")
     outf["freqList"] = freqList
-    println("2")
     outf["freqList_min"] = freqList_min
-    println("2")
     outf["parents"] = parents
-    println("2")
     outf["ops"] = ops
-    println("2")
     outf["nFermi"] = nFermi
-    println("2")
     outf["nBose"] = nBose
-    println("2")
     outf["shift"] = shift
-    println("2")
     outf["base"] = base
-    println("2")
     outf["offset"] = offset
-    println("2")
 end

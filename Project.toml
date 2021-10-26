@@ -1,7 +1,7 @@
 name = "EquivalenceClassesConstructor"
 uuid = "b0d053df-94a8-4c0c-9762-4584a2fcd8b0"
 authors = ["Julian Stobbe <Atomtomate@gmx.de> and contributors"]
-version = "0.5.2"
+version = "0.5.3"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
