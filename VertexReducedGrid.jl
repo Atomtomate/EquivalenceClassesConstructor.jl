@@ -6,9 +6,9 @@ using JLD2
 
 include("./vertexIntTriple.jl")
 
-const nBose = 50
-const nFermi = 50
-const shift = 1
+const nBose = 79
+const nFermi = 80
+const shift = 0
 path = "/scratch/projects/hhp00048/grids/b$(nBose)_f$(nFermi)_s$(shift)"
 
 # ===== Test with integers =====
@@ -96,7 +96,6 @@ base = nB
 offset = nBh
 filep = path*"/freqList.jld2"
 println("writing to $filep")
-println(typeof(freqRed_map))
 jldopen(filep, "w") do outf
     outf["freqRed_map"] = freqRed_map
     outf["freqList"] = freqList

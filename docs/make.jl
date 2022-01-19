@@ -3,8 +3,8 @@ using Documenter
 
 push!(LOAD_PATH, "../src/")
 makedocs(;
-    modules=[EquivalenceClassesConstructor],
-    authors="Julian Stobbe <Atomtomate@gmx.de> and contributors",
+#    modules=[EquivalenceClassesConstructor],
+#    authors="Julian Stobbe <Atomtomate@gmx.de> and contributors",
     repo="https://github.com/Atomtomate/EquivalenceClassesConstructor.jl/blob/{commit}{path}#L{line}",
     sitename="Equivalence Classes",
     format=Documenter.HTML(;
