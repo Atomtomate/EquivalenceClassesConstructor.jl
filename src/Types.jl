@@ -1,7 +1,6 @@
 import Base: show, display, hash, ==, isequal, eltype, keys, values
 import Base: iterate, length # Dict stuff
 
-
 # ========== Mapping/Predicate =========
 
 # TODO: limit types for arguments of f
@@ -26,8 +25,9 @@ p(4,3)
 julia> false 
 ```
 """
-
-((p::Predicate)(x::T, y::T)::Bool) where T = p.f(x,y)
+#((p::Predicate)(x::T, y::T)::Bool) where T = p.f(x,y)
+##TODO: Documenter bug: the line above does not work for @autodocs
+((p::Predicate)(x, y)::Bool) = p.f(x,y)
 
 """
     Mapping(f)(x,y)
@@ -41,7 +41,9 @@ Mapping(x -> 2:x)(30)
 julia> 2:30
 ```
 """
-((m::Mapping)(x::T)::AbstractArray{T,1}) where T = m.f(x)
+#((m::Mapping)(x::T)::AbstractArray{T,1}) where T = m.f(x)
+##TODO: Documenter bug: the line above does not work for @autodocs
+((m::Mapping)(x)) = m.f(x)
 
 # ========== ReduceMap =========
 """

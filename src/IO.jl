@@ -1,4 +1,3 @@
-
 function write_fixed_width(io::IO, minSet::Vector{Tuple{T, T, T}}; sorted=false, header_add=repeat(" ", 10)) where T
     length(header_add) != 10 && throw(ArgumentError("header string must be 10 characters long"))
     ll = sorted ? sort(minSet) : collect(minSet)
