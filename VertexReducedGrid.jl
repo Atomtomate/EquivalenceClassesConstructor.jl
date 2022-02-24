@@ -6,10 +6,10 @@ using JLD2
 
 include("./vertexIntTriple.jl")
 
-const nBose = 79
-const nFermi = 80
+const nBose = 2
+const nFermi = 2
 const shift = 0
-path = "/scratch/projects/hhp00048/grids/b$(nBose)_f$(nFermi)_s$(shift)"
+path = "/home/julian/Hamburg/vertex_test/test3/ED_vertex_test6"
 
 # ===== Test with integers =====
 const nB = UInt32(2*maximum((2*nFermi+shift*ceil(nBose/2),2*nBose+1))+1)

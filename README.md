@@ -58,6 +58,10 @@ open("eqc_out.txt", "w") do io
 end;
 ```
 
+Examples
+-----------
+
+`VertexReducedGrid.jl` constructs a minimal set for the input vertex of ['LadderDGA.jl'](https://github.com/Atomtomate/LadderDGA.jl). 
 
 
 <a name="footnote1">1</a>: The reason being, that `m(m(x))` may lie in `vl` but `m(x))` may not, forcing the algorithm to terminate.

@@ -9,7 +9,7 @@ include("./vertexIntTriple.jl")
 const nBose = 2
 const nFermi = 2
 const shift = 0
-path = "/scratch/projects/hhp00048/grids/full_b$(nBose)_f$(nFermi)_s$(shift)"
+path = "/home/julian/Hamburg/vertex_test/test3/ED_vertex_test6"
 
 # ===== Test with integers =====
 println("Integer test")

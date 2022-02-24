@@ -1,3 +1,0 @@
-ignore:
-  - "VertexReducedGrid.jl"
-  - "VertexReducedGrid_full.jl"
