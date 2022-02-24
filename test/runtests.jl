@@ -3,7 +3,6 @@ using Test
 
 using Printf
 using DataStructures
-using JLD
 using Lazy
 include("../src/Types.jl")
 include("../src/GraphTools.jl")

@@ -21,13 +21,3 @@
     #TODO: fix
     @test_broken out == res1 
 end
-
-# @testset "JLD" begin
-#     io = IOBuffer()
-#     rem = find_classes(Mapping(x -> [-x]), -4:3)
-#     em = ExpandMap(rem, collect(-4:3))
-#     write_JLD("tmp_save.jld", rem, em)
-#     d = load("tmp_save.jld")
-#     @test em == d["ExpandMap"]
-#     rm("tmp_save.jld")
-# end
