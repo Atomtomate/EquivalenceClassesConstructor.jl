@@ -6,10 +6,10 @@ using JLD2
 
 include("./vertexIntTriple.jl")
 
-const nBose = 2
-const nFermi = 2
+const nBose = 5
+const nFermi = 5
 const shift = 0
-path = "/home/julian/Hamburg/vertex_test/test3/ED_vertex_test6"
+path = "/scratch/projects/hhp00048/grids/full_b$(nBose)_f$(nFermi)_s$(shift)"
 
 # ===== Test with integers =====
 println("Integer test")
