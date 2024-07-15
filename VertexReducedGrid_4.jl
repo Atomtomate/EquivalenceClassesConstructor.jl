@@ -8,8 +8,8 @@ include("./vertexIntTriple.jl")
 
 const nBose =  5
 const nFermi = 5  
-const shift = 1
-path = "/scratch/projects/hhp00048/grids/NOHF_b$(nBose)_f$(nFermi)_s$(shift)"
+const shift = 0
+path = "NOHF_b$(nBose)_f$(nFermi)_s$(shift)"
 
 # ===== Test with integers =====
 const nB = UInt32(2*maximum((2*nFermi+shift*ceil(nBose/2),2*nBose+1))+1)
@@ -72,6 +72,19 @@ function uint_to_index(parents::Dict{UInt32,UInt32}, ops::Dict{UInt32,UInt32}, v
     return parents_new, ops_new
 end
 
+function transform_f(F_up::Vector, F_do::Vector, prev::Int, next::Int, ops::Vector{Int})
+    if ops[next] == 1 
+        F_up[next] = conj(F_up[prev])
+        F_do[next] = conj(F_do[prev])
+    elseif ops[next] == 3 || ops[next] == 4
+        F_up[next] = -F_up[prev]
+        F_do[next] = F_do[prev] - F_up[prev]
+    else
+        F_up[next] = F_up[prev]
+        F_do[next] = F_do[prev]
+    end
+end
+
 
 println("Constructing Array")
 freqList = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
@@ -108,4 +121,5 @@ jldopen(filep, "w") do outf
     outf["shift"] = shift
     outf["base"] = base
     outf["offset"] = offset
+    outf["transform_func"] = transform_f 
 end
