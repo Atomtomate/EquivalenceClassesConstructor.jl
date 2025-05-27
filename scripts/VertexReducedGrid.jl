@@ -1,15 +1,15 @@
 using Pkg
-Pkg.activate(".")
+Pkg.activate(joinpath(@__DIR__,".."))
 using EquivalenceClassesConstructor
 using Printf, DataStructures
 using JLD2
 
 include("./vertexIntTriple.jl")
 
-const nBose =  5
-const nFermi = 5  
-const shift = 0
-path = "NOHF_b$(nBose)_f$(nFermi)_s$(shift)"
+const nBose = 5
+const nFermi = 5
+const shift = 1
+path = "/scratch/projects/hhp00048/grids/b$(nBose)_f$(nFermi)_s$(shift)"
 
 # ===== Test with integers =====
 const nB = UInt32(2*maximum((2*nFermi+shift*ceil(nBose/2),2*nBose+1))+1)
@@ -46,19 +46,19 @@ end
     r2 = tripleToInt(iu, ku, ju,nB,nB2)                   # time reversal: Op 2 (1)
     r3 = oobConst                                         # double Crossing: Op 3 (-)
     r4 = oobConst                                         # crossing c: Op 4 (-)
-    #r5 = oobConst                                         # crossing c^t: Op 5 (+) 
+    r5 = oobConst                                         # crossing c^t: Op 5 (+) 
     if t2 < nB 
         if t1 < nB 
             r3 = tripleToInt(t1, ju, t2,nB,nB2)
         end
-        # if t3 < nB
-        #     r5 = tripleToInt(ni, t3, t2,nB,nB2)
-        # end
+        if t3 < nB
+            r5 = tripleToInt(ni, t3, t2,nB,nB2)
+        end
     end
     if (t3 < nB && t4 < nB)
         r4 = tripleToInt(t4, t3, ku,nB,nB2)
     end
-    return r1,r2,r3,r4
+    return r1,r2,r3,r4,r5
 end
 
 function uint_to_index(parents::Dict{UInt32,UInt32}, ops::Dict{UInt32,UInt32}, vl::Array{UInt32,1})
@@ -86,12 +86,12 @@ function transform_f(F_up::Vector, F_do::Vector, prev::Int, next::Int, ops::Vect
 end
 
 
+
 println("Constructing Array")
 freqList = [(i,j,k) for i in (-nBose:nBose) for j in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2) for k in (-nFermi:nFermi-1) .- trunc(Int64,shift*i/2)]
 const freqList_int = map(x->tripleToInt(x..., nBh,nB,nB2), freqList)
 const len_freq = (2*nBose+1)*(2*nFermi)^2
 
-#const mm_2 = Mapping(symm_map_identity)
 const mm_2 = Mapping(symm_map_int)
 println("Starting Computation 3")
 maxF = nBose + 2*nFermi + 5
